@@ -1,11 +1,13 @@
 <?php
 defined('RAIZ') or exit;
 // En Railway se leen las variables del servicio MySQL; en local, valores de MAMP.
-define('BD_HOST', getenv('MYSQLHOST') ?: '127.0.0.1');
-define('BD_PUERTO', (int) (getenv('MYSQLPORT') ?: 8889));
+$url = parse_url(getenv('MYSQL_URL') ?: getenv('DATABASE_URL') ?: '') ?: [];
+define('BD_HOST', getenv('MYSQLHOST') ?: ($url['host'] ?? '127.0.0.1'));
+define('BD_PUERTO', (int) (getenv('MYSQLPORT') ?: ($url['port'] ?? 8889)));
 define('BD_NOMBRE', getenv('BD_NOMBRE') ?: 'retoma');
-define('BD_USUARIO', getenv('MYSQLUSER') ?: 'root');
-define('BD_CLAVE', getenv('MYSQLPASSWORD') ?: 'root');
+define('BD_USUARIO', getenv('MYSQLUSER') ?: (isset($url['user']) ? urldecode($url['user']) : 'root'));
+define('BD_CLAVE', getenv('MYSQLPASSWORD') ?: (isset($url['pass']) ? urldecode($url['pass']) : 'root'));
+unset($url);
 
 date_default_timezone_set('America/Mexico_City');
 
