@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tu semáforo — Retoma</title>
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+<header class="barra">
+  <div class="contenedor">
+    <a class="marca" href="panel.html">Retoma<span>.</span></a>
+    <nav class="menu">
+      <a href="panel.html">Mi semana</a>
+      <a href="checkin.html">Check-in</a>
+      <a href="herramientas.html">Herramientas</a>
+      <a href="circulos.html">Círculos</a>
+    </nav>
+    <a class="ayuda-ya" href="apoyo.html">Necesito ayuda ahora</a>
+  </div>
+</header>
+<main class="pagina">
+  <div class="contenedor">
+    <div class="resultado">
+      <div class="semaforo" id="semaforo" aria-hidden="true"><b class="r"></b><b class="a"></b><b class="v"></b></div>
+
+      <div>
+        <div class="nivel" id="nivel-verde">
+          <p class="antetitulo">Semáforo en verde</p>
+          <h1 style="font-size:46px">Hoy vas estable.</h1>
+          <p class="suave" style="margin-top:14px;max-width:600px">Buscar trabajo cansa, y aun así hoy te mantuviste en pie. Aprovecha este buen día para avanzar un paso concreto.</p>
+          <div class="tarjetas">
+            <a class="tarjeta" href="panel.html"><h3>Tus metas de la semana</h3><p>Revisa qué te falta y marca lo que ya hiciste.</p></a>
+            <a class="tarjeta" href="circulos.html"><h3>Únete a un círculo</h3><p>Lo que a ti te funcionó le puede servir a alguien más.</p></a>
+          </div>
+        </div>
+
+        <div class="nivel" id="nivel-amarillo">
+          <p class="antetitulo">Semáforo en amarillo</p>
+          <h1 style="font-size:46px">Hoy pesa un poco más.</h1>
+          <p class="suave" style="margin-top:14px;max-width:600px">No es una emergencia, pero conviene que no lo dejes pasar. Elige una de estas opciones para los próximos diez minutos.</p>
+          <div class="tarjetas">
+            <a class="tarjeta" href="herramientas.html#respirar"><h3>Respirar un minuto</h3><p>Ejercicio guiado para bajar la tensión del cuerpo.</p></a>
+            <a class="tarjeta" href="herramientas.html#control"><h3>Separar lo que controlas</h3><p>Ordena la preocupación en dos columnas.</p></a>
+            <a class="tarjeta" href="circulos.html"><h3>Hablar con alguien</h3><p>El próximo círculo de tu ramo es el jueves.</p></a>
+          </div>
+          <p class="chico" style="margin-top:18px">Si llevas más de dos semanas en amarillo, te recomendamos buscar atención psicológica. Los Centros de Integración Juvenil y los centros de salud públicos ofrecen consulta de bajo costo o gratuita.</p>
+        </div>
+
+        <div class="nivel" id="nivel-rojo">
+          <p class="antetitulo" style="color:var(--rojo)">Semáforo en rojo</p>
+          <h1 style="font-size:46px">Lo que escribiste nos importa. No tienes que resolverlo tú solo.</h1>
+          <div class="caja-crisis">
+            <p><b>Habla ahora con alguien preparado para escucharte.</b> Es gratis, confidencial y atienden las 24 horas.</p>
+            <a class="telefono" href="tel:8009112000">800 911 2000</a>
+            <p class="chico">Línea de la Vida · Si estás en peligro inmediato, llama al 911.</p>
+            <div class="acciones">
+              <a class="boton alerta" href="tel:8009112000">Llamar ahora</a>
+              <a class="boton linea" href="apoyo.html">Necesito calmarme primero</a>
+            </div>
+          </div>
+        </div>
+
+        <section class="cursos" id="cursos" hidden>
+          <h2>Cursos de oficio para ti</h2>
+          <p class="suave" id="cursos-intro"></p>
+          <div class="tarjetas" id="lista-cursos"></div>
+          <p class="chico" style="margin-top:14px">Catálogo de ejemplo. En la versión final se conectaría con los cursos gratuitos o de bajo costo de los CECATI e ICAT de tu estado.</p>
+        </section>
+
+        <div class="porque">
+          <h4>¿Por qué salió este color?</h4>
+          <ul id="razones"></ul>
+          <p class="chico" style="margin-top:10px">El semáforo es una orientación y no un diagnóstico.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="js/app.js"></script>
+</body>
+</html>

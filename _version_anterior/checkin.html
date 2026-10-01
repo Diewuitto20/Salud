@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check-in — Retoma</title>
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+<header class="barra">
+  <div class="contenedor">
+    <a class="marca" href="panel.html">Retoma<span>.</span></a>
+    <nav class="menu">
+      <a href="panel.html">Mi semana</a>
+      <a href="checkin.html" class="activo">Check-in</a>
+      <a href="herramientas.html">Herramientas</a>
+      <a href="circulos.html">Círculos</a>
+    </nav>
+    <a class="ayuda-ya" href="apoyo.html">Necesito ayuda ahora</a>
+  </div>
+</header>
+<main class="pagina">
+  <div class="contenedor angosto">
+    <p class="antetitulo">Check-in de hoy</p>
+    <h1 style="font-size:44px">¿Cómo vas, <span data-alias></span>?</h1>
+    <p class="suave" style="margin-top:12px">Contesta como te sientas, no como crees que deberías sentirte.</p>
+
+    <form id="form-checkin">
+      <div class="bloque">
+        <label class="pregunta" for="texto">Cuéntanos tu día en unas líneas</label>
+        <span class="ayuda">Qué hiciste, qué te preocupa, qué salió bien. Nadie más lo lee.</span>
+        <textarea id="texto" name="texto" class="renglones" placeholder="Hoy…"></textarea>
+        <div class="fila-voz">
+          <button type="button" class="boton-voz" id="boton-voz"><i></i> <span id="etiqueta-voz">Dictar con voz</span></button>
+          <span class="medidor" aria-hidden="true"><i id="medidor"></i></span>
+          <span class="chico">Medimos volumen, ritmo y pausas de tu voz. El audio no se guarda ni se envía.</span>
+        </div>
+        <p class="provisional" id="voz-provisional"></p>
+        <div class="confirmar-voz" id="confirmar-voz" hidden>
+          <p class="pregunta-voz" id="pregunta-voz"></p>
+          <div class="acciones-voz" id="acciones-voz">
+            <button type="button" class="boton" data-resp="si">Sí, así me siento</button>
+            <button type="button" class="boton linea" data-resp="no">No del todo</button>
+          </div>
+          <div id="corregir-voz" hidden>
+            <p class="chico" style="margin:14px 0 8px">¿Cómo te describirías mejor hoy?</p>
+            <div class="opciones">
+              <label><input type="radio" name="voz_corregido" value="tranquilo"><span>En calma</span></label>
+              <label><input type="radio" name="voz_corregido" value="apagado"><span>Con poca energía</span></label>
+              <label><input type="radio" name="voz_corregido" value="tenso"><span>Con tensión o prisa</span></label>
+              <label><input type="radio" name="voz_corregido" value="ninguno"><span>Prefiero no decir</span></label>
+            </div>
+          </div>
+          <p class="chico" id="gracias-voz" hidden style="margin-top:12px">Gracias. Vale más lo que tú nos dices que lo que medimos.</p>
+          <input type="hidden" name="voz_detectado" id="voz_detectado">
+          <input type="hidden" name="voz_confirmado" id="voz_confirmado">
+        </div>
+      </div>
+
+      <div class="bloque">
+        <span class="pregunta">¿Cómo te sientes hoy?</span>
+        <span class="ayuda">Con base en esto te recomendamos un curso a tu ritmo.</span>
+        <div class="opciones">
+          <label><input type="radio" name="animo" value="1" required><span>Muy mal</span></label>
+          <label><input type="radio" name="animo" value="2"><span>Mal</span></label>
+          <label><input type="radio" name="animo" value="3"><span>Más o menos</span></label>
+          <label><input type="radio" name="animo" value="4"><span>Bien</span></label>
+          <label><input type="radio" name="animo" value="5"><span>Muy bien</span></label>
+        </div>
+      </div>
+
+      <div class="acciones"><button class="boton" type="submit">Ver mis recomendaciones</button></div>
+    </form>
+  </div>
+</main>
+<script src="js/app.js"></script>
+</body>
+</html>

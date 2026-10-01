@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi semana — Retoma</title>
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+<header class="barra">
+  <div class="contenedor">
+    <a class="marca" href="panel.html">Retoma<span>.</span></a>
+    <nav class="menu">
+      <a href="panel.html" class="activo">Mi semana</a>
+      <a href="checkin.html">Check-in</a>
+      <a href="herramientas.html">Herramientas</a>
+      <a href="circulos.html">Círculos</a>
+    </nav>
+    <a class="ayuda-ya" href="apoyo.html">Necesito ayuda ahora</a>
+  </div>
+</header>
+<main class="pagina">
+  <div class="contenedor">
+    <div class="saludo">
+      <div>
+        <p class="antetitulo">Mi semana</p>
+        <h1 style="font-size:46px">Hola, <span data-alias></span>.</h1>
+      </div>
+      <div style="text-align:right">
+        <span class="estado-chip" id="ultimo-nivel"><i class="punto a"></i> Último check-in: Con carga</span>
+        <div class="acciones" style="margin-top:12px;justify-content:flex-end"><a class="boton" href="checkin.html">Hacer check-in de hoy</a></div>
+      </div>
+    </div>
+
+    <div class="rejilla">
+      <div class="caja grafica">
+        <h3>Cómo te has sentido</h3>
+        <p class="chico">Ánimo del 1 al 10, calculado a partir de tus check-ins.</p>
+        <div id="grafica-animo"></div>
+        <div class="leyenda">
+          <span><i class="punto v"></i> Estable</span>
+          <span><i class="punto a"></i> Con carga</span>
+          <span><i class="punto r"></i> Necesita apoyo</span>
+        </div>
+      </div>
+
+      <div style="display:grid;gap:20px">
+        <div class="caja">
+          <p class="chico">Tiempo sin empleo</p>
+          <p class="dato"><span id="meses-sin-empleo">3 a 6</span></p>
+          <p class="chico">meses. Esto no mide tu valor; nos ayuda a acompañarte mejor.</p>
+        </div>
+        <div class="caja">
+          <p class="chico">Próximo círculo</p>
+          <h3 style="margin-top:6px">Comercio y ventas</h3>
+          <p class="suave" style="font-size:15px">Jueves, 7:00 p. m. · en línea</p>
+          <a href="circulos.html" class="chico">Ver todos los círculos</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="rejilla" style="margin-top:20px">
+      <div class="caja">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+          <h3>Metas de esta semana</h3>
+          <span class="chico" data-contador="metas"></span>
+        </div>
+        <p class="chico" style="margin-bottom:6px">Pequeñas y alcanzables. Una a la vez.</p>
+        <ul class="checklist" data-lista="metas">
+          <li><label><input type="checkbox"><span>Actualizar mi CV con el último puesto</span></label></li>
+          <li><label><input type="checkbox"><span>Mandar 3 solicitudes</span></label></li>
+          <li><label><input type="checkbox"><span>Salir a caminar 3 veces</span></label></li>
+          <li><label><input type="checkbox"><span>Platicar con alguien sobre cómo me siento</span></label></li>
+          <li><label><input type="checkbox"><span>Ensayar respuestas para entrevista</span></label></li>
+        </ul>
+      </div>
+      <div class="caja" style="background:var(--primario-claro);border-color:transparent">
+        <h3>Para esta semana</h3>
+        <p class="suave" style="font-size:15px">Buscar trabajo también es trabajo, pero no te lleva ocho horas al día. Ponle hora de inicio y hora de fin.</p>
+        <div class="acciones" style="margin-top:16px"><a class="boton linea" href="herramientas.html#rutina">Ver rutina mínima</a></div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="js/app.js"></script>
+</body>
+</html>

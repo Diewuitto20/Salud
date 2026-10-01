@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crear alias — Retoma</title>
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+<header class="barra">
+  <div class="contenedor">
+    <a class="marca" href="index.html">Retoma<span>.</span></a>
+    <a class="ayuda-ya" href="apoyo.html">Necesito ayuda ahora</a>
+  </div>
+</header>
+
+<main class="pagina">
+  <div class="contenedor angosto">
+    <div class="progreso"><i class="hecho"></i><i></i><i></i></div>
+    <p class="antetitulo">Paso 1 de 3</p>
+    <h1 style="font-size:44px">Un poco de contexto, sin datos personales.</h1>
+    <p class="suave" style="margin-top:12px">Esto nos ayuda a entender tu situación. Puedes cambiarlo cuando quieras.</p>
+
+    <form id="form-registro">
+      <div class="bloque">
+        <label class="pregunta" for="alias">¿Cómo quieres que te llamemos?</label>
+        <span class="ayuda">Puede ser un apodo o cualquier nombre inventado.</span>
+        <input type="text" id="alias" name="alias" maxlength="20" placeholder="Ej. Lalo, Caro, Neto…" required>
+      </div>
+
+      <div class="bloque">
+        <span class="pregunta">¿Qué edad tienes?</span>
+        <div class="opciones">
+          <label><input type="radio" name="edad" value="18-21" required><span>18 a 21</span></label>
+          <label><input type="radio" name="edad" value="22-25"><span>22 a 25</span></label>
+          <label><input type="radio" name="edad" value="26-29"><span>26 a 29</span></label>
+          <label><input type="radio" name="edad" value="30+"><span>30 o más</span></label>
+        </div>
+      </div>
+
+      <div class="bloque">
+        <span class="pregunta">¿Cuánto tiempo llevas sin empleo?</span>
+        <div class="opciones">
+          <label><input type="radio" name="meses" value="0-1" required><span>Menos de 1 mes</span></label>
+          <label><input type="radio" name="meses" value="1-3"><span>1 a 3 meses</span></label>
+          <label><input type="radio" name="meses" value="3-6"><span>3 a 6 meses</span></label>
+          <label><input type="radio" name="meses" value="6-12"><span>6 a 12 meses</span></label>
+          <label><input type="radio" name="meses" value="12+"><span>Más de un año</span></label>
+        </div>
+      </div>
+
+      <div class="bloque">
+        <label class="pregunta" for="sector">¿En qué trabajabas antes?</label>
+        <span class="ayuda">Lo usamos para sugerirte un círculo con gente del mismo ramo.</span>
+        <select id="sector" name="sector" required>
+          <option value="">Elige una opción</option>
+          <option>Comercio y ventas</option>
+          <option>Call center y atención a clientes</option>
+          <option>Manufactura y maquila</option>
+          <option>Oficina y administración</option>
+          <option>Tecnología</option>
+          <option>Restaurantes y servicios</option>
+          <option>Otro</option>
+        </select>
+        <input type="text" id="sector-otro" name="sector_otro" maxlength="40" placeholder="Escribe en qué trabajabas" hidden style="margin-top:10px">
+      </div>
+
+      <div class="bloque">
+        <span class="pregunta">¿Alguien depende de tu ingreso?</span>
+        <span class="ayuda">Hijos, papás, pareja o cualquier persona a la que apoyes con dinero.</span>
+        <div class="opciones">
+          <label><input type="radio" name="dependientes" value="si" required><span>Sí</span></label>
+          <label><input type="radio" name="dependientes" value="no"><span>No</span></label>
+        </div>
+        <div id="cuantos-dependen" hidden style="margin-top:18px">
+          <span class="ayuda">¿Cuántas personas?</span>
+          <div class="opciones">
+            <label><input type="radio" name="num_dependientes" value="1"><span>1</span></label>
+            <label><input type="radio" name="num_dependientes" value="2"><span>2</span></label>
+            <label><input type="radio" name="num_dependientes" value="3"><span>3</span></label>
+            <label><input type="radio" name="num_dependientes" value="4"><span>4</span></label>
+            <label><input type="radio" name="num_dependientes" value="5+"><span>5 o más</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="nota-privacidad">Todo se guarda con tu alias. No pedimos correo, teléfono ni ubicación.</div>
+      <div class="acciones"><button class="boton" type="submit">Continuar al primer check-in</button></div>
+    </form>
+  </div>
+</main>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<?php defined('RAIZ') or exit; ?>
+<section class="seccion">
+  <div class="contenedor angosto">
+    <h1 class="titulo-pagina">¿Cómo te ha afectado quedarte sin trabajo?</h1>
+    <p class="suave">Son doce preguntas sobre estrés, ansiedad, autoestima y vida familiar. Toma unos cuatro minutos. No es un diagnóstico: te ayuda a saber cómo estás y qué te puede servir ahora.</p>
+    <p class="privacidad-cuestionario"><b>Solo tú ves tus respuestas.</b> Nos sirven para acompañarte mejor y nunca se comparten con empresas.</p>
+    <div class="retomar" id="retomar" hidden>
+      <p><b>Tienes un cuestionario a medias.</b> ¿Quieres continuar donde te quedaste?</p>
+      <div class="acciones">
+        <button type="button" class="boton chico-boton" data-continuar>Continuar donde me quedé</button>
+        <button type="button" class="boton linea chico-boton" data-reiniciar>Empezar de nuevo</button>
+      </div>
+    </div>
+    <?php if (!esPersona()): ?>
+      <p class="invitacion">Puedes contestarlo sin cuenta. Si <a href="entrar.php?volver=cuestionario.php">inicias sesión</a>, guardamos tu resultado para que veas tu avance en «Mi ruta». Solo tú puedes verlo.</p>
+    <?php endif; ?>
+
+    <form method="post" class="cuestionario">
+      <?= campoToken() ?>
+      <div class="progreso" aria-live="polite">
+        <div class="progreso-texto" id="progreso-texto"></div>
+        <div class="progreso-barra"><i id="progreso-relleno"></i></div>
+      </div>
+
+      <div class="paso">
+      <fieldset class="bloque">
+        <legend>Con tus palabras <span class="opcional">(opcional)</span></legend>
+        <p class="ayuda">Escribe o dicta cómo te has sentido. Al terminar de dictar te diremos qué ánimo notamos, para que lo confirmes.</p>
+        <textarea id="relato" name="relato" rows="4" maxlength="1000" placeholder="Desde que me quedé sin trabajo…"></textarea>
+        <div class="fila-voz">
+          <button type="button" class="boton-voz" data-dictar="relato" data-animo><i></i><span>Dictar con voz</span></button>
+          <span class="volumen" aria-hidden="true"><i></i></span>
+        </div>
+        <p class="provisional" aria-live="polite"></p>
+        <div class="confirmar-animo" hidden>
+          <p class="chico">Medidor de ánimo</p>
+          <div class="medidor-animo">
+            <?php foreach (['Muy mal', 'Mal', 'Más o menos', 'Bien', 'Muy bien'] as $i => $t): ?>
+              <button type="button" data-n="<?= $i + 1 ?>"><?= $t ?></button>
+            <?php endforeach; ?>
+          </div>
+          <p class="pregunta-animo"></p>
+          <div class="acciones-animo">
+            <button type="button" class="boton chico-boton" data-resp="si">Sí, así me siento</button>
+            <button type="button" class="boton linea chico-boton" data-resp="no">No del todo</button>
+          </div>
+          <input type="hidden" name="animo_detectado">
+          <input type="hidden" name="animo_confirmado">
+        </div>
+      </fieldset>
+      </div>
+
+      <div class="paso">
+      <fieldset class="bloque">
+        <legend>¿Cuánto tiempo llevas sin empleo?</legend>
+        <div class="opciones">
+          <?php foreach ($meses as $valor => $texto): ?>
+            <label><input type="radio" name="meses" value="<?= $valor ?>" required><span><?= $texto ?></span></label>
+          <?php endforeach; ?>
+        </div>
+      </fieldset>
+      </div>
+
+      <div class="paso">
+      <fieldset class="bloque">
+        <legend>¿Cuánto ha afectado tu estado de ánimo haber perdido tu trabajo?</legend>
+        <div class="opciones">
+          <?php foreach ($impactos as $valor => $texto): ?>
+            <label><input type="radio" name="impacto" value="<?= $valor ?>" required><span><?= $texto ?></span></label>
+          <?php endforeach; ?>
+        </div>
+      </fieldset>
+      </div>
+
+      <p class="separador">¿Con qué frecuencia te ha pasado esto en las últimas 2 semanas?</p>
+      <?php foreach ($preguntas as $clave => $lista): ?>
+        <h2 class="dimension"><?= DIMENSIONES[$clave] ?></h2>
+        <?php foreach ($lista as $n => $p): ?>
+          <div class="paso">
+          <p class="seccion-paso"><?= DIMENSIONES[$clave] ?> · ¿Con qué frecuencia te ha pasado esto en las últimas 2 semanas?</p>
+          <fieldset class="bloque pregunta-escala">
+            <legend><?= e($p) ?></legend>
+            <div class="opciones">
+              <?php foreach ($opciones as $valor => $texto): ?>
+                <label><input type="radio" name="<?= $clave . $n ?>" value="<?= $valor ?>" required><span><?= $texto ?></span></label>
+              <?php endforeach; ?>
+            </div>
+          </fieldset>
+          </div>
+        <?php endforeach; ?>
+      <?php endforeach; ?>
+
+      <div class="navegacion-pasos" hidden>
+        <button type="button" class="boton linea" data-atras>Atrás</button>
+        <button type="button" class="boton" data-siguiente>Siguiente</button>
+      </div>
+      <p class="guardar-luego" hidden><button type="button" class="enlace" data-guardar>Guardar y seguir luego</button></p>
+      <button class="boton grande" type="submit">Ver mi resultado</button>
+      <p class="chico">Preguntas inspiradas en escalas usadas en psicología (estrés percibido, ansiedad generalizada y autoestima de Rosenberg) y adaptadas a la situación de desempleo. Si inicias sesión, tus respuestas se guardan según el <a href="privacidad.php">aviso de privacidad</a>.</p>
+    </form>
+  </div>
+</section>

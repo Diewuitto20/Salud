@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas — Retoma</title>
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+<header class="barra">
+  <div class="contenedor">
+    <a class="marca" href="panel.html">Retoma<span>.</span></a>
+    <nav class="menu">
+      <a href="panel.html">Mi semana</a>
+      <a href="checkin.html">Check-in</a>
+      <a href="herramientas.html" class="activo">Herramientas</a>
+      <a href="circulos.html">Círculos</a>
+    </nav>
+    <a class="ayuda-ya" href="apoyo.html">Necesito ayuda ahora</a>
+  </div>
+</header>
+<main class="pagina">
+  <div class="contenedor">
+    <p class="antetitulo">Herramientas</p>
+    <h1 style="font-size:46px;max-width:700px">Cosas pequeñas para los días pesados.</h1>
+
+    <div class="herramienta" id="respirar">
+      <div>
+        <h2>Respirar un minuto</h2>
+        <p class="suave">Inhala en cuatro tiempos y suelta el aire en seis. Exhalar más lento que inhalar ayuda a que el cuerpo baje de revoluciones. Son seis ciclos.</p>
+        <div class="acciones"><button class="boton verde" id="iniciar-resp">Empezar (1 minuto)</button></div>
+      </div>
+      <div>
+        <div class="circulo-resp"><div class="bola" id="bola"></div></div>
+        <p class="indicacion" id="indicacion"></p>
+      </div>
+    </div>
+
+    <div class="herramienta" id="control">
+      <div>
+        <h2>Separar lo que controlas</h2>
+        <p class="suave">Cuando todo se junta, la cabeza lo mezcla. Escribe tus preocupaciones de hoy en la columna que les corresponde. Luego elige una sola de la izquierda para mañana.</p>
+      </div>
+      <div class="control-cols">
+        <div><label for="c1">Depende de mí</label><textarea id="c1" placeholder="Ajustar mi CV para ventas…"></textarea></div>
+        <div><label for="c2">No depende de mí</label><textarea id="c2" placeholder="Si me llaman de la entrevista del lunes…"></textarea></div>
+      </div>
+    </div>
+
+    <div class="herramienta" id="carta">
+      <div>
+        <h2>Carta al trabajo que se fue</h2>
+        <p class="suave">Perder un empleo también es un duelo. Escribe qué extrañas, qué no, y qué te llevas de ahí. No tienes que enviarla a nadie.</p>
+      </div>
+      <textarea class="renglones" placeholder="Lo que más extraño es…"></textarea>
+    </div>
+
+    <div class="herramienta" id="rutina" style="border-bottom:0">
+      <div>
+        <h2>Rutina mínima</h2>
+        <p class="suave">Sin horario de trabajo, los días se deshacen. Esta lista es el piso, no la meta: <span data-contador="rutina"></span>.</p>
+      </div>
+      <ul class="checklist" data-lista="rutina">
+        <li><label><input type="checkbox"><span>Levantarme antes de las 9</span></label></li>
+        <li><label><input type="checkbox"><span>Bañarme y cambiarme de ropa</span></label></li>
+        <li><label><input type="checkbox"><span>Comer algo de verdad al mediodía</span></label></li>
+        <li><label><input type="checkbox"><span>Salir de la casa, aunque sea diez minutos</span></label></li>
+        <li><label><input type="checkbox"><span>Una hora de búsqueda, y ya</span></label></li>
+      </ul>
+    </div>
+  </div>
+</main>
+<script src="js/app.js"></script>
+</body>
+</html>
