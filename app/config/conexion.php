@@ -1,11 +1,11 @@
 <?php
 defined('RAIZ') or exit;
-// Valores por defecto de MAMP en Mac. En Windows el puerto suele ser 3306.
-const BD_HOST = '127.0.0.1';
-const BD_PUERTO = 8889;
-const BD_NOMBRE = 'retoma';
-const BD_USUARIO = 'root';
-const BD_CLAVE = 'root';
+// En Railway se leen las variables del servicio MySQL; en local, valores de MAMP.
+define('BD_HOST', getenv('MYSQLHOST') ?: '127.0.0.1');
+define('BD_PUERTO', (int) (getenv('MYSQLPORT') ?: 8889));
+define('BD_NOMBRE', getenv('BD_NOMBRE') ?: 'retoma');
+define('BD_USUARIO', getenv('MYSQLUSER') ?: 'root');
+define('BD_CLAVE', getenv('MYSQLPASSWORD') ?: 'root');
 
 date_default_timezone_set('America/Mexico_City');
 

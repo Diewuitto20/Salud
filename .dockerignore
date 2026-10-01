@@ -1,0 +1,7 @@
+.git
+_version_anterior
+Claude outputs
+*.docx
+*.command
+app/servidor.php
+.DS_Store
