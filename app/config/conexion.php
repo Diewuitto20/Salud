@@ -8,7 +8,7 @@ define('BD_PUERTO', (int) (getenv('MYSQLPORT') ?: ($url['port'] ?? $local['puert
 define('BD_NOMBRE', getenv('BD_NOMBRE') ?: ($local['nombre'] ?? 'retoma'));
 define('BD_USUARIO', getenv('MYSQLUSER') ?: (isset($url['user']) ? urldecode($url['user']) : ($local['usuario'] ?? '')));
 define('BD_CLAVE', getenv('MYSQLPASSWORD') ?: (isset($url['pass']) ? urldecode($url['pass']) : ($local['clave'] ?? '')));
-define('ESQUEMA_VERSION', 4);
+define('ESQUEMA_VERSION', 5);
 unset($url, $local);
 
 date_default_timezone_set('America/Mexico_City');
