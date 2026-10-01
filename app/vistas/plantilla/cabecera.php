@@ -30,7 +30,7 @@
     <div class="cuenta">
       <?php if ($u): ?>
         <span class="quien"><?= e($u['nombre']) ?></span>
-        <a href="salir.php">Salir</a>
+        <form method="post" action="salir.php" class="form-salir"><?= campoToken() ?><button type="submit">Salir</button></form>
       <?php else: ?>
         <a href="<?= $zonaEmpresas ? 'empresas.php#acceso' : 'entrar.php' ?>">Entrar</a>
       <?php endif; ?>

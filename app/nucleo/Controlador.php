@@ -27,20 +27,17 @@ abstract class Controlador
                 $enlaces = ['avance.php' => 'Mi ruta', 'plan.php' => 'Mi plan', 'valia.php' => 'Mi valía'] + $enlaces;
             }
         }
-        if (esLocal() && !usuario()) {
+        if (esModerador()) {
             $enlaces['moderacion.php'] = 'Moderación';
         }
         return ['u' => usuario(), 'actual' => $actual, 'zonaEmpresas' => $zonaEmpresas, 'enlaces' => $enlaces];
     }
 
-    /* Estado elegido por la persona (?estado=…), recordado en la sesión y en su cuenta */
+    /* Estado elegido por la persona (?estado=…), recordado en la sesión; en la cuenta solo se guarda por POST (registro y plan) */
     protected function estadoActual(): string
     {
         if (isset($_GET['estado']) && array_key_exists($_GET['estado'], ESTADOS)) {
             $_SESSION['estado'] = $_GET['estado'];
-            if (esPersona()) {
-                Usuario::cambiarEstado(usuario()['id'], $_GET['estado']);
-            }
         }
         if (empty($_SESSION['estado']) && usuario()) {
             $_SESSION['estado'] = Usuario::estadoDe(usuario()['id']);
@@ -48,11 +45,28 @@ abstract class Controlador
         return $_SESSION['estado'] ?? '';
     }
 
-    protected function soloLocal(string $mensaje): void
+    /* Moderación y reinicio: piden la clave de moderación; sin clave configurada quedan apagados */
+    protected function exigirModerador(): void
     {
-        if (!esLocal()) {
+        if (claveModeracion() === '') {
             http_response_code(403);
-            exit($mensaje);
+            exit('La moderación está desactivada: falta configurar la variable MODERACION_CLAVE (mínimo 12 caracteres).');
         }
+        if (esModerador()) return;
+        $error = '';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'entrar_moderacion') {
+            validarToken();
+            if (excedeLimite('moderacion', 5, 15)) {
+                $error = 'Demasiados intentos. Espera 15 minutos.';
+            } elseif (hash_equals(claveModeracion(), (string) ($_POST['clave'] ?? ''))) {
+                session_regenerate_id(true);
+                $_SESSION['moderador'] = true;
+                redirigir(basename($_SERVER['PHP_SELF']));
+            } else {
+                $error = 'Clave incorrecta.';
+            }
+        }
+        $this->vista('moderacion/entrar', ['titulo' => 'Acceso de moderación', 'error' => $error]);
+        exit;
     }
 }

@@ -5,10 +5,32 @@ class Postulacion extends Modelo
 {
     public const ESTADOS = ['Recibida', 'En revisión', 'Entrevista', 'Contratado', 'No seleccionado'];
 
-    public static function crear(int $vacante, int $usuario, string $contacto, string $mensaje): void
+    /*
+     * Bloquea la vacante mientras cuenta los lugares, así dos postulaciones al mismo tiempo no rebasan los cupos.
+     * Devuelve 'ok', 'repetida' o 'llena'.
+     */
+    public static function crear(int $vacante, int $usuario, string $contacto, string $mensaje): string
     {
-        self::consultar('INSERT IGNORE INTO postulaciones (vacante_id, usuario_id, contacto, mensaje) VALUES (?, ?, ?, ?)',
-            [$vacante, $usuario, mb_substr($contacto, 0, 120), mb_substr($mensaje, 0, 300)]);
+        $bd = self::bd();
+        $bd->beginTransaction();
+        try {
+            $cupos = self::consultar('SELECT cupos FROM vacantes WHERE id = ? AND activa = 1 FOR UPDATE', [$vacante])->fetchColumn();
+            $ocupados = (int) self::consultar('SELECT COUNT(*) FROM postulaciones WHERE vacante_id = ?', [$vacante])->fetchColumn();
+            if (self::consultar('SELECT 1 FROM postulaciones WHERE vacante_id = ? AND usuario_id = ?', [$vacante, $usuario])->fetchColumn()) {
+                $resultado = 'repetida';
+            } elseif ($cupos === false || $ocupados >= (int) $cupos) {
+                $resultado = 'llena';
+            } else {
+                self::consultar('INSERT INTO postulaciones (vacante_id, usuario_id, contacto, mensaje) VALUES (?, ?, ?, ?)',
+                    [$vacante, $usuario, mb_substr($contacto, 0, 120), mb_substr($mensaje, 0, 300)]);
+                $resultado = 'ok';
+            }
+            $bd->commit();
+            return $resultado;
+        } catch (Throwable $e) {
+            $bd->rollBack();
+            throw $e;
+        }
     }
 
     public static function deUsuario(int $usuario): array

@@ -56,6 +56,19 @@ function esTextoBasura(string $texto): bool
     return count($palabras) < 2;
 }
 
+/* Para respuestas cortas: rechaza solo teclazos (sin vocales o con 5 consonantes seguidas) y texto sin letras */
+function sinSentido(string $texto): bool
+{
+    $t = sinAcentos(trim($texto));
+    if (!preg_match('/[a-zñ]{2}/u', $t)) return true;
+    foreach (preg_split('/\s+/u', $t) as $p) {
+        $letras = preg_replace('/[^a-zñ]/u', '', $p);
+        if (mb_strlen($letras) >= 5 && !preg_match('/[aeiouy]/', $letras)) return true;
+        if (preg_match('/[bcdfghjklmnñpqrstvwxz]{5,}/u', $letras)) return true;
+    }
+    return false;
+}
+
 function avisoCrisis(): string
 {
     return 'Lo que escribiste nos importa. Si estás pasando por un momento muy difícil, habla ahora con alguien: '

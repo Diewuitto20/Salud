@@ -1,12 +1,12 @@
 <?php
 defined('RAIZ') or exit;
 
-/* Revisión de notas reportadas; solo desde la computadora del servidor */
+/* Revisión de notas reportadas; solo con la clave de moderación */
 class ModeracionControlador extends Controlador
 {
     public function __construct()
     {
-        $this->soloLocal('La moderación solo se puede abrir desde la computadora donde corre el servidor.');
+        $this->exigirModerador();
     }
 
     public function index(): void

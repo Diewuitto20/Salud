@@ -1,12 +1,20 @@
 <?php
 /*
  * Enrutador para el servidor integrado de PHP (iniciar_servidor.command y compartir_https.command).
- * Bloquea la carpeta app/, igual que app/.htaccess lo hace en Apache (MAMP).
+ * Solo deja pasar las páginas de la raíz y los archivos de css/ y js/; todo lo demás
+ * (app/, _version_anterior/, documentos, respaldos, .git) responde 404.
  */
-$pedido = realpath($_SERVER['DOCUMENT_ROOT'] . rawurldecode(strtok($_SERVER['REQUEST_URI'], '?')));
-$privada = realpath(__DIR__);
-if ($pedido && str_starts_with(strtolower($pedido . '/'), strtolower($privada . '/'))) {
-    http_response_code(403);
-    exit('Acceso denegado.');
+$ruta = rawurldecode(strtok($_SERVER['REQUEST_URI'], '?'));
+if ($ruta === '/') {
+    $_SERVER['SCRIPT_NAME'] = '/index.php';
+    require __DIR__ . '/../index.php';
+    return true;
 }
-return false;
+if (preg_match('#^/[a-z]+\.php$#', $ruta) && is_file(__DIR__ . '/..' . $ruta)) {
+    return false;
+}
+if (preg_match('#^/(css|js)/[\w.-]+\.(css|js)$#', $ruta) && is_file(__DIR__ . '/..' . $ruta)) {
+    return false;
+}
+http_response_code(404);
+exit('Página no encontrada.');

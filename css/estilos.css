@@ -512,3 +512,10 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
   .fila-nivel { grid-template-columns: 1fr 90px; }
   .fila-nivel .pista { grid-column: 1 / -1; grid-row: 2; }
 }
+
+/* Salir: botón con aspecto de enlace (se envía por POST con token) */
+.form-salir { display: inline; }
+.form-salir button { background: none; border: 0; padding: 0; color: var(--suave); font: 600 15px "Nunito", sans-serif; cursor: pointer; }
+.form-salir button:hover { text-decoration: underline; }
+.verificar-reporte { display: grid; gap: 6px; font-weight: 700; font-size: 15px; }
+.verificar-reporte input { font: 600 16px ui-monospace, Menlo, monospace; padding: 8px 12px; border: 1.5px solid var(--linea); border-radius: 10px; width: 190px; text-transform: uppercase; }

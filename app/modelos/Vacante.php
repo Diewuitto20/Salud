@@ -35,8 +35,9 @@ class Vacante extends Modelo
         }
         if ($texto !== '') {
             $condiciones[] = '(v.titulo LIKE ? OR v.descripcion LIKE ?)';
-            $parametros[] = "%$texto%";
-            $parametros[] = "%$texto%";
+            $patron = '%' . addcslashes($texto, '%_\\') . '%';
+            $parametros[] = $patron;
+            $parametros[] = $patron;
         }
         if ($todas) {
             $condiciones = ['v.activa = 1'];
@@ -59,6 +60,9 @@ class Vacante extends Modelo
     {
         if (in_array('', [$datos['titulo'], $datos['descripcion'], $datos['ubicacion'], $datos['modalidad'], $datos['estado'], $datos['periodo']], true) || $datos['monto'] < 1) {
             return 'Completa todos los campos marcados con *.';
+        }
+        if (mb_strlen($datos['titulo']) > 100 || mb_strlen($datos['ubicacion']) > 100 || mb_strlen($datos['descripcion']) > 3000) {
+            return 'El puesto y la ciudad pueden tener hasta 100 caracteres, y la descripción hasta 3000.';
         }
         if ($datos['monto'] > 999999) {
             return 'Revisa el sueldo: la cantidad es demasiado alta.';

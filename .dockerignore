@@ -10,3 +10,11 @@ Dockerfile
 railway.json
 composer.json
 *.png
+diagramas
+app/config/bd.local.php
+app/config/moderacion.local.php
+*.tgz
+*.gz
+*.md
+.gitignore
+.htaccess

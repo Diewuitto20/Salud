@@ -25,10 +25,17 @@ class EmpresaControlador extends Controlador
         $clave = $_POST['clave'] ?? '';
 
         if ($this->modo === 'entrar') {
+            if (bloqueado('login', 20, 15) || bloqueado('login-correo', 5, 15, $correo)) {
+                $this->presentacion('Demasiados intentos. Espera 15 minutos y vuelve a intentarlo.');
+                return;
+            }
             $u = Usuario::buscarPorCorreo($correo, 'empresa');
             if ($u && password_verify($clave, $u['clave'])) {
+                limpiarIntentos('login-correo', $correo);
                 $this->iniciarSesion((int) $u['id'], $u['nombre']);
             }
+            registrarIntento('login');
+            registrarIntento('login-correo', $correo);
             $this->presentacion('Correo o contraseña incorrectos.');
             return;
         }
@@ -38,18 +45,25 @@ class EmpresaControlador extends Controlador
         $error = '';
         if (mb_strlen($nombre) < 2 || tieneGroserias($nombre)) {
             $error = 'Escribe el nombre de tu empresa o negocio.';
-        } elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+        } elseif (mb_strlen($nombre) > 80) {
+            $error = 'El nombre de la empresa puede tener hasta 80 caracteres.';
+        } elseif ($telefono !== '' && !preg_match('/^[0-9 +()-]{7,30}$/', $telefono)) {
+            $error = 'Escribe el teléfono solo con números (de 7 a 30 caracteres).';
+        } elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL) || mb_strlen($correo) > 120) {
             $error = 'Escribe un correo válido.';
-        } elseif (mb_strlen($clave) < 6) {
-            $error = 'La contraseña debe tener al menos 6 caracteres.';
+        } elseif (mb_strlen($clave) < 8 || mb_strlen($clave) > 72) {
+            $error = 'La contraseña debe tener de 8 a 72 caracteres.';
         } elseif (!isset($_POST['privacidad'])) {
             $error = 'Necesitas aceptar el aviso de privacidad.';
+        } elseif (excedeLimite('registro', 5, 60)) {
+            $error = 'Se crearon demasiadas cuentas desde esta conexión. Intenta de nuevo en una hora.';
         } else {
             try {
                 $id = Usuario::crearEmpresa($nombre, $correo, $telefono ?: null, $clave);
                 aviso('Tu empresa ya está registrada. Publica tu primera vacante.');
                 $this->iniciarSesion($id, $nombre);
             } catch (PDOException $ex) {
+                if (!esDuplicado($ex)) throw $ex;
                 $error = 'Ya existe una cuenta con ese correo.';
                 $this->modo = 'entrar';
             }

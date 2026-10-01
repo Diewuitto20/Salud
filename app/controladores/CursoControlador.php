@@ -29,6 +29,7 @@ class CursoControlador extends Controlador
         exigir('persona');
         validarToken();
         $curso = (int) ($_POST['curso'] ?? 0);
+        if (!Curso::existe($curso)) redirigir('cursos.php?tipo=' . $this->tipo);
         if (Curso::alternarGuardado(usuario()['id'], $curso)) {
             aviso('Guardado en <a href="avance.php#cursos">Mi ruta</a>. Ahí puedes marcar cuando te inscribas o lo termines.');
         }

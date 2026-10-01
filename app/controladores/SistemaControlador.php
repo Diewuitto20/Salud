@@ -1,12 +1,12 @@
 <?php
 defined('RAIZ') or exit;
 
-/* Borrado de datos de prueba; solo desde la computadora del servidor */
+/* Borrado de datos de prueba; solo con la clave de moderación */
 class SistemaControlador extends Controlador
 {
     public function __construct()
     {
-        $this->soloLocal('Esta página solo se puede abrir desde la computadora donde corre el servidor.');
+        $this->exigirModerador();
     }
 
     public function confirmar(): void

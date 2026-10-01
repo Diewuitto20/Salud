@@ -35,11 +35,15 @@ class VacanteControlador extends Controlador
         $contacto = trim($_POST['contacto'] ?? '');
         if ($contacto === '') {
             aviso('Déjanos un teléfono o correo para que la empresa te contacte.', 'cuidado');
-        } elseif (Vacante::libres($vacante) < 1) {
-            aviso('Esta vacante ya no tiene lugares disponibles.', 'cuidado');
         } else {
-            Postulacion::crear($vacante, $yo, $contacto, trim($_POST['mensaje'] ?? ''));
-            aviso('¡Listo! La empresa recibió tu postulación. Puedes ver su respuesta en <a href="avance.php">Mi ruta</a>.');
+            $resultado = Postulacion::crear($vacante, $yo, $contacto, trim($_POST['mensaje'] ?? ''));
+            if ($resultado === 'ok') {
+                aviso('¡Listo! La empresa recibió tu postulación. Puedes ver su respuesta en <a href="avance.php">Mi ruta</a>.');
+            } elseif ($resultado === 'repetida') {
+                aviso('Ya te habías postulado a esta vacante. Puedes ver cómo va en <a href="avance.php">Mi ruta</a>.', 'cuidado');
+            } else {
+                aviso('Esta vacante ya no tiene lugares disponibles.', 'cuidado');
+            }
         }
         redirigir('vacantes.php#vacante-' . $vacante);
     }

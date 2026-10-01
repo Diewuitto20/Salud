@@ -17,7 +17,7 @@
       <?php if (!esEmpresa()): ?><a class="boton linea chico-boton" href="cuestionario.php">¿Cómo te sientes hoy? Hacer el cuestionario</a><?php endif; ?>
     </div>
 
-    <?php if (usuario()): ?>
+    <?php if (esPersona()): ?>
       <form method="post" class="nueva-nota nota nota-amarillo" id="nueva-nota">
         <?= campoToken() ?>
         <input type="hidden" name="accion" value="nota">
@@ -35,7 +35,7 @@
           <button class="boton" type="submit">Pegar nota</button>
         </div>
       </form>
-    <?php else: ?>
+    <?php elseif (!usuario()): ?>
       <p class="invitacion"><a href="entrar.php?volver=foro.php">Inicia sesión</a> para dejar una nota o apoyar a alguien.</p>
     <?php endif; ?>
 
@@ -57,9 +57,9 @@
               <?= campoToken() ?>
               <input type="hidden" name="accion" value="apoyo">
               <input type="hidden" name="nota" value="<?= $n['id'] ?>">
-              <button class="apoyo <?= $n['mio'] ? 'dado' : '' ?>" type="submit" <?= usuario() ? '' : 'disabled' ?>>Te apoyo · <?= $n['apoyos'] ?></button>
+              <button class="apoyo <?= $n['mio'] ? 'dado' : '' ?>" type="submit" <?= esPersona() ? '' : 'disabled' ?>>Te apoyo · <?= $n['apoyos'] ?></button>
             </form>
-            <?php if (usuario() && (int) $n['usuario_id'] !== usuario()['id']): ?>
+            <?php if (esPersona() && (int) $n['usuario_id'] !== usuario()['id']): ?>
               <form method="post" class="form-denunciar">
                 <?= campoToken() ?>
                 <input type="hidden" name="accion" value="denunciar">
@@ -70,9 +70,13 @@
             <details>
               <summary>Responder (<?= count($comentarios[$n['id']] ?? []) ?>)</summary>
               <?php foreach ($comentarios[$n['id']] ?? [] as $c): ?>
-                <p class="comentario"><b><?= e($c['nombre']) ?>:</b> <?= e($c['texto']) ?></p>
+                <?php if ($c['sensible']): ?>
+                  <details class="comentario contenido-sensible"><summary><b><?= e($c['nombre']) ?>:</b> respuesta con un tema difícil. <span>Mostrar</span></summary><p><?= e($c['texto']) ?></p></details>
+                <?php else: ?>
+                  <p class="comentario"><b><?= e($c['nombre']) ?>:</b> <?= e($c['texto']) ?></p>
+                <?php endif; ?>
               <?php endforeach; ?>
-              <?php if (usuario()): ?>
+              <?php if (esPersona()): ?>
                 <form method="post" class="responder">
                   <?= campoToken() ?>
                   <input type="hidden" name="accion" value="comentario">

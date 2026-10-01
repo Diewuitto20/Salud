@@ -36,10 +36,17 @@ class AccesoControlador extends Controlador
         $clave = $_POST['clave'] ?? '';
 
         if ($this->modo === 'entrar') {
+            if (bloqueado('login', 20, 15) || bloqueado('login-correo', 5, 15, $correo)) {
+                $this->formulario('Demasiados intentos. Espera 15 minutos y vuelve a intentarlo.');
+                return;
+            }
             $u = Usuario::buscarPorCorreo($correo, 'persona');
             if ($u && password_verify($clave, $u['clave'])) {
+                limpiarIntentos('login-correo', $correo);
                 $this->iniciarSesion($u);
             }
+            registrarIntento('login');
+            registrarIntento('login-correo', $correo);
             $this->formulario('Correo o contraseña incorrectos. Si tienes una cuenta de empresa, entra desde «Para empresas».');
             return;
         }
@@ -51,17 +58,20 @@ class AccesoControlador extends Controlador
             $error = 'Tu alias debe tener de 3 a 15 letras o números, sin símbolos.';
         } elseif (tieneGroserias($nombre)) {
             $error = 'Elige un alias sin palabras ofensivas, por favor.';
-        } elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+        } elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL) || mb_strlen($correo) > 120) {
             $error = 'Escribe un correo válido.';
-        } elseif (mb_strlen($clave) < 6) {
-            $error = 'La contraseña debe tener al menos 6 caracteres.';
+        } elseif (mb_strlen($clave) < 8 || mb_strlen($clave) > 72) {
+            $error = 'La contraseña debe tener de 8 a 72 caracteres.';
         } elseif (!isset($_POST['privacidad'])) {
             $error = 'Para crear tu cuenta necesitas aceptar el aviso de privacidad.';
+        } elseif (excedeLimite('registro', 5, 60)) {
+            $error = 'Se crearon demasiadas cuentas desde esta conexión. Intenta de nuevo en una hora.';
         } else {
             try {
                 $id = Usuario::crearPersona($nombre, $correo, $clave, $estado);
                 $this->iniciarSesion(['id' => $id, 'tipo' => 'persona', 'nombre' => $nombre, 'estado' => $estado]);
             } catch (PDOException $ex) {
+                if (!esDuplicado($ex)) throw $ex;
                 $error = 'Ya existe una cuenta con ese correo. Inicia sesión.';
                 $this->modo = 'entrar';
             }
@@ -69,10 +79,16 @@ class AccesoControlador extends Controlador
         $this->formulario($error);
     }
 
+    public function irAlInicio(): void
+    {
+        redirigir('index.php');
+    }
+
     public function salir(): void
     {
+        validarToken();
         $_SESSION = [];
-        setcookie(session_name(), '', time() - 3600, '/');
+        setcookie(session_name(), '', ['expires' => time() - 3600, 'path' => '/', 'secure' => esHttps(), 'httponly' => true, 'samesite' => 'Lax']);
         session_destroy();
         header('Location: index.php?salida=1');
     }

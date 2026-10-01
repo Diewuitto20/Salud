@@ -1,0 +1,4 @@
+# Configuración local con contraseñas: nunca al repositorio
+app/config/bd.local.php
+app/config/moderacion.local.php
+.DS_Store

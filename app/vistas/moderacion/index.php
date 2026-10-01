@@ -6,7 +6,7 @@
         <h1 class="titulo-pagina">Moderación del foro</h1>
         <p class="suave">Notas que la comunidad reportó. Con 3 reportes se ocultan solas hasta que las revises.</p>
       </div>
-      <span class="chico">Solo visible desde esta computadora</span>
+      <span class="chico">Solo para el equipo de moderación</span>
     </div>
     <?php foreach ($denunciadas as $d): ?>
       <article class="tarjeta reporte">

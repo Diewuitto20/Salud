@@ -63,7 +63,7 @@ class Evaluacion extends Modelo
         elseif ($total >= 8) $nivel = 'leve';
         else $nivel = 'minimo';
 
-        $confirmado = (int) ($respuestas['animo_confirmado'] ?? 0) ?: null;
+        $confirmado = self::animo($respuestas['animo_confirmado'] ?? null);
         $impacto = max(0, min(3, (int) ($respuestas['impacto'] ?? 0)));
         return compact('puntos', 'total', 'nivel', 'crisis', 'impacto', 'confirmado', 'casiDiario');
     }
@@ -71,10 +71,23 @@ class Evaluacion extends Modelo
     public static function guardar(int $usuario, array $resultado, array $respuestas): void
     {
         $mes = array_key_exists($respuestas['meses'] ?? '', self::MESES) ? $respuestas['meses'] : '0-1';
-        $detectado = (int) ($respuestas['animo_detectado'] ?? 0) ?: null;
+        $detectado = self::animo($respuestas['animo_detectado'] ?? null);
+        $valores = [$mes, $resultado['impacto'], ...array_values($resultado['puntos']), $resultado['total'], $resultado['nivel'], $detectado, $resultado['confirmado']];
+        $hoy = self::consultar('SELECT id FROM evaluaciones WHERE usuario_id = ? AND creado > NOW() - INTERVAL 1 DAY ORDER BY id DESC LIMIT 1', [$usuario])->fetchColumn();
+        if ($hoy) {
+            self::consultar('UPDATE evaluaciones SET meses = ?, impacto = ?, estres = ?, ansiedad = ?, autoestima = ?, familia = ?, total = ?, nivel = ?,
+                animo_detectado = ?, animo_confirmado = ? WHERE id = ?', [...$valores, $hoy]);
+            return;
+        }
         self::consultar('INSERT INTO evaluaciones (usuario_id, meses, impacto, estres, ansiedad, autoestima, familia, total, nivel, animo_detectado, animo_confirmado)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [$usuario, $mes, $resultado['impacto'], ...array_values($resultado['puntos']), $resultado['total'], $resultado['nivel'], $detectado, $resultado['confirmado']]);
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [$usuario, ...$valores]);
+    }
+
+    /* Ánimo del medidor: 1 a 5, cualquier otro valor se descarta */
+    private static function animo($valor): ?int
+    {
+        $n = filter_var($valor, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 5]]);
+        return $n === false ? null : $n;
     }
 
     public static function historialDe(int $usuario): array

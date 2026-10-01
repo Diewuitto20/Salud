@@ -13,14 +13,14 @@ class ForoControlador extends Controlador
             'orden' => $orden,
             'borrador' => $borrador,
             'colores' => Nota::COLORES,
-            'notas' => Nota::muro($orden === 'apoyadas', usuario()['id'] ?? 0),
-            'comentarios' => Nota::comentarios(),
+            'notas' => $notas = Nota::muro($orden === 'apoyadas', usuario()['id'] ?? 0),
+            'comentarios' => Nota::comentarios($notas),
         ]);
     }
 
     public function procesar(): void
     {
-        exigir();
+        exigir('persona');
         validarToken();
         $yo = usuario()['id'];
         $accion = $_POST['accion'] ?? '';
@@ -40,6 +40,10 @@ class ForoControlador extends Controlador
         }
 
         if ($accion === 'denunciar') {
+            if (excedeLimite('denuncia', 10, 1440, 'u' . $yo)) {
+                aviso('Ya enviaste muchos reportes hoy. El equipo de moderación los está revisando.', 'cuidado');
+                redirigir('foro.php#nota-' . $nota);
+            }
             Nota::denunciar($nota, $yo);
             aviso('Gracias por avisarnos. El equipo revisará la nota; si varias personas la reportan, se oculta mientras tanto.');
         }
@@ -53,9 +57,14 @@ class ForoControlador extends Controlador
             $destino .= '#nota-' . $nota;
         }
         if ($accion === 'comentario' && $texto !== '') {
-            Nota::comentar($nota, $yo, $texto);
-            if (hayCrisis($texto)) aviso(avisoCrisis(), 'cuidado');
             $destino .= '#nota-' . $nota;
+            if (sinSentido($texto)) {
+                aviso('Escribe unas palabras con sentido para responder.', 'cuidado');
+            } elseif (!Nota::comentar($nota, $yo, $texto, temaSensible($texto))) {
+                aviso('Esa nota ya no está disponible.', 'cuidado');
+            } elseif (hayCrisis($texto)) {
+                aviso(avisoCrisis(), 'cuidado');
+            }
         }
         redirigir($destino);
     }

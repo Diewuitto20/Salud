@@ -56,14 +56,6 @@ function validarToken(): void
     }
 }
 
-function esLocal(): bool
-{
-    $host = strtolower(preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST'] ?? ''));
-    return in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true)
-        && in_array($host, ['localhost', '127.0.0.1', '[::1]'], true)
-        && empty($_SERVER['HTTP_X_FORWARDED_FOR']);
-}
-
 function aviso(string $texto, string $tipo = 'ok'): void
 {
     $_SESSION['aviso'] = ['texto' => $texto, 'tipo' => $tipo];

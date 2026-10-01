@@ -11,7 +11,7 @@
         <?= campoToken() ?>
         <input type="hidden" name="accion" value="publicar">
         <label><span>Puesto <span class="obligatorio">*</span></span><input type="text" name="titulo" maxlength="100" required placeholder="Ej. Ayudante de cocina"></label>
-        <label><span>Descripción <span class="obligatorio">*</span></span><textarea name="descripcion" rows="4" required placeholder="Qué hará la persona, horario, si necesitas experiencia…"></textarea></label>
+        <label><span>Descripción <span class="obligatorio">*</span></span><textarea name="descripcion" rows="4" maxlength="3000" required placeholder="Qué hará la persona, horario, si necesitas experiencia…"></textarea></label>
         <div class="fila-campos">
           <label><span>Estado <span class="obligatorio">*</span></span>
             <select name="estado" required>

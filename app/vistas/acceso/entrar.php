@@ -14,7 +14,7 @@
         <form method="post" class="formulario">
           <?= campoToken() ?>
           <input type="hidden" name="modo" value="entrar">
-          <label>Correo<input type="email" name="correo" required autocomplete="email" value="<?= e($previo['correo'] ?? '') ?>"></label>
+          <label>Correo<input type="email" name="correo" maxlength="120" required autocomplete="email" value="<?= e($previo['correo'] ?? '') ?>"></label>
           <label>Contraseña<input type="password" name="clave" required autocomplete="current-password"></label>
           <button class="boton" type="submit">Entrar</button>
         </form>
@@ -38,8 +38,8 @@
             </select>
             <span class="ayuda-campo">Así te mostramos cursos, apoyos y centros de atención cerca de ti.</span>
           </label>
-          <label>Correo<input type="email" name="correo" required autocomplete="email" value="<?= e($previo['correo'] ?? '') ?>"></label>
-          <label>Contraseña<input type="password" name="clave" minlength="6" required autocomplete="new-password"></label>
+          <label>Correo<input type="email" name="correo" maxlength="120" required autocomplete="email" value="<?= e($previo['correo'] ?? '') ?>"></label>
+          <label>Contraseña<input type="password" name="clave" minlength="8" maxlength="72" required autocomplete="new-password"></label>
           <label class="casilla"><input type="checkbox" name="privacidad" required> <span>Leí y acepto el <a href="privacidad.php" target="_blank">aviso de privacidad</a>, incluido el uso de mis respuestas del cuestionario, que son datos sensibles.</span></label>
           <button class="boton" type="submit">Crear cuenta</button>
         </form>

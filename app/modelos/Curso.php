@@ -23,6 +23,11 @@ class Curso extends Modelo
         return self::consultar('SELECT * FROM cursos WHERE tipo = ? AND (estado IS NULL OR estado = ?) ORDER BY estado IS NULL, ritmo, nombre', [$tipo, $estado])->fetchAll();
     }
 
+    public static function existe(int $curso): bool
+    {
+        return (bool) self::consultar('SELECT 1 FROM cursos WHERE id = ?', [$curso])->fetchColumn();
+    }
+
     public static function idsGuardados(int $usuario): array
     {
         return self::consultar('SELECT curso_id FROM cursos_guardados WHERE usuario_id = ?', [$usuario])->fetchAll(PDO::FETCH_COLUMN);

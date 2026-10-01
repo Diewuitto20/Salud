@@ -1,13 +1,15 @@
 <?php
 defined('RAIZ') or exit;
-// En Railway se leen las variables del servicio MySQL; en local, valores de MAMP.
+// En Railway se leen las variables del servicio MySQL; en local, app/config/bd.local.php (no se sube a git).
 $url = parse_url(getenv('MYSQL_URL') ?: getenv('DATABASE_URL') ?: '') ?: [];
-define('BD_HOST', getenv('MYSQLHOST') ?: ($url['host'] ?? '127.0.0.1'));
-define('BD_PUERTO', (int) (getenv('MYSQLPORT') ?: ($url['port'] ?? 8889)));
-define('BD_NOMBRE', getenv('BD_NOMBRE') ?: 'retoma');
-define('BD_USUARIO', getenv('MYSQLUSER') ?: (isset($url['user']) ? urldecode($url['user']) : 'root'));
-define('BD_CLAVE', getenv('MYSQLPASSWORD') ?: (isset($url['pass']) ? urldecode($url['pass']) : 'root'));
-unset($url);
+$local = is_file(__DIR__ . '/bd.local.php') ? require __DIR__ . '/bd.local.php' : [];
+define('BD_HOST', getenv('MYSQLHOST') ?: ($url['host'] ?? $local['host'] ?? '127.0.0.1'));
+define('BD_PUERTO', (int) (getenv('MYSQLPORT') ?: ($url['port'] ?? $local['puerto'] ?? 3306)));
+define('BD_NOMBRE', getenv('BD_NOMBRE') ?: ($local['nombre'] ?? 'retoma'));
+define('BD_USUARIO', getenv('MYSQLUSER') ?: (isset($url['user']) ? urldecode($url['user']) : ($local['usuario'] ?? '')));
+define('BD_CLAVE', getenv('MYSQLPASSWORD') ?: (isset($url['pass']) ? urldecode($url['pass']) : ($local['clave'] ?? '')));
+define('ESQUEMA_VERSION', 3);
+unset($url, $local);
 
 date_default_timezone_set('America/Mexico_City');
 
@@ -26,7 +28,12 @@ function bd(): PDO
             $pdo = new PDO($servidor . ';dbname=' . BD_NOMBRE, BD_USUARIO, BD_CLAVE, $opciones);
         }
         $pdo->exec("SET time_zone = '" . date('P') . "'");
-        actualizarEsquema($pdo);
+        /* El esquema se revisa una vez por versión y por servidor, no en cada petición */
+        $marca = sys_get_temp_dir() . '/retoma_esquema_' . md5(BD_HOST . BD_PUERTO . BD_NOMBRE) . '_v' . ESQUEMA_VERSION;
+        if (!is_file($marca)) {
+            actualizarEsquema($pdo);
+            @touch($marca);
+        }
     }
     return $pdo;
 }
@@ -80,6 +87,13 @@ function actualizarEsquema(PDO $pdo): void
     if (!existe($pdo, 'planes')) {
         $sql = file_get_contents(__DIR__ . '/../sql/retoma.sql');
         $pdo->exec(substr($sql, strpos($sql, 'CREATE TABLE planes')));
+    }
+    if (!existe($pdo, 'intentos')) {
+        $sql = file_get_contents(__DIR__ . '/../sql/retoma.sql');
+        $pdo->exec(substr($sql, strpos($sql, 'CREATE TABLE intentos')));
+    }
+    if (!existe($pdo, 'comentarios', 'sensible')) {
+        $pdo->exec('ALTER TABLE comentarios ADD sensible TINYINT(1) NOT NULL DEFAULT 0 AFTER texto');
     }
     if (!existe($pdo, 'cursos_guardados')) {
         $pdo->exec("CREATE TABLE cursos_guardados (

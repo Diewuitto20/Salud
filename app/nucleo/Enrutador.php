@@ -7,7 +7,7 @@ class Enrutador
     private const RUTAS = [
         'index.php' => ['InicioControlador', 'index', null],
         'entrar.php' => ['AccesoControlador', 'formulario', 'procesar'],
-        'salir.php' => ['AccesoControlador', 'salir', null],
+        'salir.php' => ['AccesoControlador', 'irAlInicio', 'salir'],
         'empresas.php' => ['EmpresaControlador', 'presentacion', 'acceso'],
         'empresa.php' => ['EmpresaControlador', 'panel', 'gestionar'],
         'vacantes.php' => ['VacanteControlador', 'index', 'procesar'],

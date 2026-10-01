@@ -1,0 +1,6 @@
+# Apache (MAMP): solo se publican las páginas de la raíz y los archivos de css/ y js/.
+Options -Indexes
+RedirectMatch 404 (?i)/(_version_anterior|diagramas|Claude.outputs|\.git|app)(/|$)
+<FilesMatch "(?i)\.(docx?|pdf|png|jpe?g|tgz|gz|tar|zip|sql|md|sh|command|json|lock|log|env|yml|yaml)$|^(Dockerfile|\.dockerignore|\.gitignore|\.htaccess)$">
+    Require all denied
+</FilesMatch>

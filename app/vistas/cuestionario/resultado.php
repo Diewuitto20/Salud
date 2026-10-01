@@ -32,7 +32,7 @@
         <?php endif; ?>
       </div>
     <?php endif; ?>
-    <?php if ($r['confirmado']): ?>
+    <?php if (isset($nombresAnimo[$r['confirmado'] ?? 0])): ?>
       <p class="chico">También nos dijiste que hoy te sientes <b><?= $nombresAnimo[$r['confirmado']] ?></b>.</p>
     <?php endif; ?>
 

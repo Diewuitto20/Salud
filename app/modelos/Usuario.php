@@ -39,7 +39,7 @@ class Usuario extends Modelo
     {
         $pdo = self::bd();
         $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
-        foreach (['plan_marcas', 'planes', 'preferencias', 'apoyos_guardados', 'valia', 'denuncias', 'cursos_guardados', 'postulaciones', 'vacantes', 'evaluaciones', 'comentarios', 'apoyos', 'notas', 'usuarios'] as $tabla) {
+        foreach (['reportes', 'intentos', 'plan_marcas', 'planes', 'preferencias', 'apoyos_guardados', 'valia', 'denuncias', 'cursos_guardados', 'postulaciones', 'vacantes', 'evaluaciones', 'comentarios', 'apoyos', 'notas', 'usuarios'] as $tabla) {
             $pdo->exec("TRUNCATE TABLE $tabla");
         }
         $pdo->exec('SET FOREIGN_KEY_CHECKS = 1');

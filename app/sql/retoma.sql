@@ -2,7 +2,7 @@ SET NAMES utf8mb4;
 CREATE DATABASE IF NOT EXISTS retoma CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE retoma;
 
-DROP TABLE IF EXISTS plan_marcas, planes, preferencias, apoyos_guardados, valia, denuncias, cursos_guardados, postulaciones, vacantes, evaluaciones, comentarios, apoyos, notas, usuarios;
+DROP TABLE IF EXISTS reportes, intentos, plan_marcas, planes, preferencias, apoyos_guardados, valia, denuncias, cursos_guardados, postulaciones, vacantes, evaluaciones, comentarios, apoyos, notas, usuarios;
 
 CREATE TABLE usuarios (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -40,6 +40,7 @@ CREATE TABLE comentarios (
   nota_id INT NOT NULL,
   usuario_id INT NOT NULL,
   texto VARCHAR(280) NOT NULL,
+  sensible TINYINT(1) NOT NULL DEFAULT 0,
   creado DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (nota_id) REFERENCES notas(id) ON DELETE CASCADE,
   FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
@@ -153,4 +154,17 @@ CREATE TABLE plan_marcas (
   fecha DATE NOT NULL,
   PRIMARY KEY (plan_id, meta, fecha),
   FOREIGN KEY (plan_id) REFERENCES planes(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE intentos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  clave VARCHAR(150) NOT NULL,
+  creado DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX (clave, creado)
+) ENGINE=InnoDB;
+
+CREATE TABLE reportes (
+  codigo CHAR(14) PRIMARY KEY,
+  cifras TEXT NOT NULL,
+  creado DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;

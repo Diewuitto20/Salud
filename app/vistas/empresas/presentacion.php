@@ -25,11 +25,11 @@
         <?php if ($modo === 'registro'): ?>
           <label>Nombre de la empresa o negocio<input type="text" name="nombre" maxlength="80" required value="<?= e($previo['nombre'] ?? '') ?>"></label>
         <?php endif; ?>
-        <label>Correo<input type="email" name="correo" required autocomplete="email" value="<?= e($previo['correo'] ?? '') ?>"></label>
+        <label>Correo<input type="email" name="correo" maxlength="120" required autocomplete="email" value="<?= e($previo['correo'] ?? '') ?>"></label>
         <?php if ($modo === 'registro'): ?>
           <label>Teléfono <span class="opcional">(opcional)</span><input type="text" name="telefono" maxlength="30" value="<?= e($previo['telefono'] ?? '') ?>"></label>
         <?php endif; ?>
-        <label>Contraseña<input type="password" name="clave" minlength="6" required></label>
+        <label>Contraseña<input type="password" name="clave" required<?= $modo === 'registro' ? ' minlength="8" maxlength="72" autocomplete="new-password"' : ' autocomplete="current-password"' ?>></label>
         <?php if ($modo === 'registro'): ?>
           <label class="casilla"><input type="checkbox" name="privacidad" required> <span>Acepto el <a href="privacidad.php" target="_blank">aviso de privacidad</a>.</span></label>
         <?php endif; ?>

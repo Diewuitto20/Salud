@@ -296,10 +296,23 @@ if (nuevaNota) {
 
 /* Diálogos: ayuda y enlaces externos */
 const guardado = {
-  leer(clave) { try { return JSON.parse(localStorage.getItem('retoma_' + clave)); } catch (e) { return null; } },
+  /* Lo guardado caduca a las 24 horas: en una computadora compartida no se queda */
+  leer(clave) {
+    try {
+      const valor = JSON.parse(localStorage.getItem('retoma_' + clave));
+      if (valor && valor.fecha && Date.now() - valor.fecha > 864e5) { localStorage.removeItem('retoma_' + clave); return null; }
+      return valor;
+    } catch (e) { return null; }
+  },
   escribir(clave, valor) { try { localStorage.setItem('retoma_' + clave, JSON.stringify(valor)); } catch (e) {} },
   borrar(clave) { try { localStorage.removeItem('retoma_' + clave); } catch (e) {} }
 };
+
+/* Borradores guardados por versiones anteriores: se les quita el relato libre */
+(() => {
+  const previo = guardado.leer('cuestionario');
+  if (previo && previo.datos && previo.datos.relato) { delete previo.datos.relato; guardado.escribir('cuestionario', previo); }
+})();
 
 document.querySelectorAll('dialog.dialogo').forEach(d => {
   d.querySelectorAll('[data-cerrar]').forEach(b => b.addEventListener('click', () => d.close()));
@@ -397,8 +410,11 @@ if (cuestionario) {
     return datos;
   }
 
+  /* El relato libre es dato sensible: nunca se guarda en el navegador, solo las opciones marcadas */
   function guardarProgreso() {
-    guardado.escribir('cuestionario', { paso: actual, datos: respuestas(), fecha: Date.now() });
+    const datos = respuestas();
+    delete datos.relato;
+    guardado.escribir('cuestionario', { paso: actual, datos, fecha: Date.now() });
   }
 
   function mostrar(i, desplazar = true) {
