@@ -8,7 +8,7 @@ define('BD_PUERTO', (int) (getenv('MYSQLPORT') ?: ($url['port'] ?? $local['puert
 define('BD_NOMBRE', getenv('BD_NOMBRE') ?: ($local['nombre'] ?? 'retoma'));
 define('BD_USUARIO', getenv('MYSQLUSER') ?: (isset($url['user']) ? urldecode($url['user']) : ($local['usuario'] ?? '')));
 define('BD_CLAVE', getenv('MYSQLPASSWORD') ?: (isset($url['pass']) ? urldecode($url['pass']) : ($local['clave'] ?? '')));
-define('ESQUEMA_VERSION', 5);
+define('ESQUEMA_VERSION', 6);
 unset($url, $local);
 
 date_default_timezone_set('America/Mexico_City');
@@ -53,12 +53,9 @@ function actualizarEsquema(PDO $pdo): void
         $pdo->exec(file_get_contents(__DIR__ . '/../sql/cursos.sql'));
         if (existe($pdo, 'cursos_guardados')) $pdo->exec('DELETE FROM cursos_guardados');
     }
-    /* tlaxcaladigital.gob.mx dejó de responder: los cursos del ICATLAX pasan a su sitio y el resto se quita */
-    if ($pdo->query("SELECT 1 FROM cursos WHERE enlace LIKE 'https://www.tlaxcaladigital.gob.mx/%' LIMIT 1")->fetch()) {
-        $pdo->exec("UPDATE cursos SET enlace = 'https://icatlax.edu.mx/index.php/cursos/' WHERE enlace LIKE 'https://www.tlaxcaladigital.gob.mx/ficha/curso%'");
-        $pdo->exec("DELETE FROM cursos WHERE enlace LIKE 'https://www.tlaxcaladigital.gob.mx/%'");
-        if (existe($pdo, 'cursos_guardados')) $pdo->exec('DELETE g FROM cursos_guardados g LEFT JOIN cursos c ON c.id = g.curso_id WHERE c.id IS NULL');
-    }
+    /* Cursos de Tlaxcala con enlaces caídos: se quitan también de bases ya creadas */
+    $pdo->exec("DELETE FROM cursos WHERE enlace LIKE '%tlaxcaladigital.gob.mx%' OR enlace LIKE '%icatlax.edu.mx%'");
+    if (existe($pdo, 'cursos_guardados')) $pdo->exec('DELETE g FROM cursos_guardados g LEFT JOIN cursos c ON c.id = g.curso_id WHERE c.id IS NULL');
     if (!existe($pdo, 'usuarios', 'acepta_seguimiento')) {
         $indice = $pdo->query("SHOW INDEX FROM usuarios WHERE Key_name = 'nombre_por_tipo'")->fetch();
         if ($indice) $pdo->exec('ALTER TABLE usuarios DROP INDEX nombre_por_tipo');
