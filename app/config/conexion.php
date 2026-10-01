@@ -53,6 +53,8 @@ function actualizarEsquema(PDO $pdo): void
         $pdo->exec(file_get_contents(__DIR__ . '/../sql/cursos.sql'));
         if (existe($pdo, 'cursos_guardados')) $pdo->exec('DELETE FROM cursos_guardados');
     }
+    /* Enlaces de cursos que dejaron de funcionar: se corrigen también en bases ya creadas */
+    $pdo->exec("UPDATE cursos SET enlace = 'https://icatlax.edu.mx/index.php/cursos/' WHERE enlace LIKE 'https://www.tlaxcaladigital.gob.mx/ficha/curso%'");
     if (!existe($pdo, 'usuarios', 'acepta_seguimiento')) {
         $indice = $pdo->query("SHOW INDEX FROM usuarios WHERE Key_name = 'nombre_por_tipo'")->fetch();
         if ($indice) $pdo->exec('ALTER TABLE usuarios DROP INDEX nombre_por_tipo');
