@@ -7,6 +7,32 @@ class Impacto extends Modelo
     /* Debajo de este número, una cifra de salud mental podría señalar a alguien: no se publica */
     public const MINIMO = 5;
 
+    /* Descripción, color de acento (PDF) y clase CSS de cada sección */
+    public const SECCIONES_INFO = [
+        'Alcance' => ['Cuántas personas y empresas usan la plataforma.', '2A9D8F', '1D7A6F', 'alcance'],
+        'Bienestar emocional' => ['Cómo cambia la afectación de quienes repiten el cuestionario.', '7CC6A4', '2E7D5B', 'bienestar'],
+        'Comunidad de apoyo' => ['Actividad en el foro entre personas que viven lo mismo.', '9B8AD1', '5E4BA8', 'comunidad'],
+        'Reinserción laboral' => ['Vacantes solidarias y el camino de las postulaciones.', 'FFB547', 'B0651A', 'laboral'],
+        'Capacitación y plan de 30 días' => ['Cursos elegidos y metas cumplidas en el plan personal.', '6CA8D8', '2D6E9E', 'capacitacion'],
+    ];
+
+    public static function esCero($valor): bool
+    {
+        return in_array((string) $valor, ['0', '—', '0%'], true);
+    }
+
+    /* Parte un texto en renglones que quepan en el ancho dado */
+    private static function renglones(Pdf $pdf, string $texto, float $tam, float $ancho): array
+    {
+        $lineas = [''];
+        foreach (explode(' ', $texto) as $palabra) {
+            $prueba = trim(end($lineas) . ' ' . $palabra);
+            if ($pdf->ancho($prueba, $tam) <= $ancho || end($lineas) === '') $lineas[count($lineas) - 1] = $prueba;
+            else $lineas[] = $palabra;
+        }
+        return $lineas;
+    }
+
     public static function cifras(): array
     {
         $bd = self::bd();
@@ -163,31 +189,39 @@ class Impacto extends Modelo
 
         $y = 150;
         foreach (self::secciones($c) as [$titulo, $datos]) {
+            [, $acento, $oscuro, $clase] = self::SECCIONES_INFO[$titulo] ?? ['', '2A9D8F', '1D7A6F', ''];
+            $destacada = $clase === 'alcance';
+            $alto = $destacada ? 72 : 66;
             $filas = (int) ceil(count($datos) / 3);
-            if ($y + 30 + $filas * 70 > Pdf::ALTO - 60) {
+            if ($y + 34 + $filas * ($alto + 10) > Pdf::ALTO - 60) {
                 $pdf->pagina();
                 $y = 50;
             }
-            $pdf->texto($margen, $y + 12, $titulo, 13, true, '22393D');
-            $pdf->linea($margen, $y + 20, $margen + $ancho, $y + 20, 'EFE5D7');
-            $y += 30;
+            $pdf->rect($margen, $y, 4, 16, $acento);
+            $pdf->texto($margen + 12, $y + 13, $titulo, 13, true, '22393D');
+            $y += 26;
             $col = ($ancho - 2 * 10) / 3;
             foreach ($datos as $i => [$valor, $etiqueta]) {
                 $x = $margen + ($i % 3) * ($col + 10);
-                $yy = $y + intdiv($i, 3) * 70;
-                $pdf->rect($x, $yy, $col, 60, 'FFF8EC');
-                $pdf->textoAlineado($x, $yy + 28, $col, (string) $valor, 22, true, '1D7A6F');
-                $pdf->textoAlineado($x, $yy + 46, $col, $etiqueta, 8.2, false, '55696C');
+                $yy = $y + intdiv($i, 3) * ($alto + 10);
+                $cero = self::esCero($valor);
+                $pdf->rect($x, $yy, $col, $alto, $destacada ? 'DCF3EE' : 'FFF8EC');
+                $pdf->rect($x, $yy, $col, 3, $cero ? 'D9DFE0' : $acento);
+                $pdf->textoAlineado($x, $yy + ($destacada ? 34 : 30), $col, (string) $valor, $destacada ? 26 : 21, true, $cero ? 'A9B5B7' : $oscuro);
+                $lineas = self::renglones($pdf, $etiqueta, 8.2, $col - 16);
+                foreach ($lineas as $n => $linea) {
+                    $pdf->textoAlineado($x, $yy + ($destacada ? 50 : 45) + $n * 10, $col, $linea, 8.2, false, '55696C');
+                }
             }
-            $y += $filas * 70 + 8;
+            $y += $filas * ($alto + 10) + 12;
         }
 
         if ($y + 150 > Pdf::ALTO - 60) {
             $pdf->pagina();
             $y = 50;
         }
-        $pdf->texto($margen, $y + 12, 'Cómo están las personas hoy (último cuestionario de cada una)', 13, true, '22393D');
-        $pdf->linea($margen, $y + 20, $margen + $ancho, $y + 20, 'EFE5D7');
+        $pdf->rect($margen, $y, 4, 16, '22393D');
+        $pdf->texto($margen + 12, $y + 13, 'Cómo están las personas hoy (último cuestionario de cada una)', 13, true, '22393D');
         $y += 34;
         $colores = ['minimo' => '2A9D8F', 'leve' => '7CC6A4', 'moderado' => 'FFB547', 'grave' => 'E0563F'];
         $filas = self::filasNiveles($c);
@@ -208,8 +242,8 @@ class Impacto extends Modelo
             $y = 50;
         }
         $y += 12;
-        $pdf->texto($margen, $y + 12, 'Cómo se calculan y cómo verificarlas', 13, true, '22393D');
-        $pdf->linea($margen, $y + 20, $margen + $ancho, $y + 20, 'EFE5D7');
+        $pdf->rect($margen, $y, 4, 16, '22393D');
+        $pdf->texto($margen + 12, $y + 13, 'Cómo se calculan y cómo verificarlas', 13, true, '22393D');
         $y += 36;
         $notas = [
             'Todas las cifras se consultan en vivo en la base de datos de la plataforma al momento de generar este reporte. Son agregadas y anónimas: no incluyen nombres, correos ni respuestas individuales.',

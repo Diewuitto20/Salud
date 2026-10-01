@@ -7,7 +7,7 @@
 <title><?= e($titulo) ?> · ReActiva-T</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/estilos.css">
+<link rel="stylesheet" href="css/estilos.css?v=<?= filemtime(RAIZ . '/css/estilos.css') ?>">
 </head>
 <body>
 <a class="saltar" href="#contenido">Saltar al contenido</a>

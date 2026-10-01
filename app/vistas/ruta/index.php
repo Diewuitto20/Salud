@@ -3,6 +3,7 @@
   <div class="contenedor">
     <p class="antetitulo">Mi ruta</p>
     <h1 class="titulo-pagina">Hola, <?= e(usuario()['nombre']) ?>.</h1>
+    <p class="descargar-reporte"><a class="boton linea chico-boton" href="avance.php?formato=pdf">Descargar mi reporte PDF</a> <span class="chico">Tu bienestar, tu mapa de valía y tu avance en un documento privado.</span></p>
 
     <div class="retomar" id="retomar-ruta" hidden>
       <p><b>Dejaste un cuestionario a medias.</b> Puedes seguir donde te quedaste.</p>

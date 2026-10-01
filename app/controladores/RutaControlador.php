@@ -12,6 +12,20 @@ class RutaControlador extends Controlador
 
     public function index(): void
     {
+        if (($_GET['formato'] ?? '') === 'pdf') {
+            if (excedeLimite('reporte_personal', 10, 60)) {
+                aviso('Ya descargaste varios reportes. Intenta de nuevo en una hora.', 'cuidado');
+                redirigir('avance.php');
+            }
+            $pdf = Reporte::personal(usuario());
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment; filename="ReActivaT_Mi_reporte_' . date('Y-m-d') . '.pdf"');
+            header('Content-Length: ' . strlen($pdf));
+            header('Cache-Control: no-store, private');
+            echo $pdf;
+            exit;
+        }
+
         $yo = usuario()['id'];
         $evaluaciones = Evaluacion::historialDe($yo);
         $ultima = end($evaluaciones) ?: null;

@@ -27,6 +27,7 @@ abstract class Controlador
                 $enlaces = ['avance.php' => 'Mi ruta', 'plan.php' => 'Mi plan', 'valia.php' => 'Mi valía'] + $enlaces;
             }
         }
+        $enlaces['impacto.php'] = 'Resultados';
         if (esModerador()) {
             $enlaces['moderacion.php'] = 'Moderación';
         }

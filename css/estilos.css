@@ -497,7 +497,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 
 /* Resultados del reto */
 .huella { font-family: ui-monospace, Menlo, monospace; letter-spacing: .04em; }
-.cifras-impacto b { font-size: 34px; }
 .barras-niveles { display: grid; gap: 10px; margin-top: 14px; max-width: 760px; }
 .fila-nivel { display: grid; grid-template-columns: 190px 1fr 90px; gap: 12px; align-items: center; }
 .pista { height: 16px; background: var(--linea); border-radius: 999px; overflow: hidden; }
@@ -519,3 +518,28 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .form-salir button:hover { text-decoration: underline; }
 .verificar-reporte { display: grid; gap: 6px; font-weight: 700; font-size: 15px; }
 .verificar-reporte input { font: 600 16px ui-monospace, Menlo, monospace; padding: 8px 12px; border: 1.5px solid var(--linea); border-radius: 10px; width: 190px; text-transform: uppercase; }
+
+/* Resultados del reto: bloques por sección */
+.ayuda-verificar { font-weight: 400; font-size: 14px; color: var(--suave); max-width: 520px; line-height: 1.45; }
+.bloque-impacto { --acento: var(--primario); --acento-oscuro: var(--primario-oscuro); background: var(--superficie); border-radius: var(--radio); box-shadow: var(--sombra); border-top: 5px solid var(--acento); padding: 22px 24px 24px; margin-top: 24px; }
+.bloque-impacto h2 { margin: 0; font-size: 22px; line-height: 1.25; }
+.bloque-impacto > p { margin: 4px 0 0; font-size: 15px; }
+.cifras-impacto { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+.cifras-impacto .cifra { background: var(--fondo); border: 1px solid var(--linea); border-radius: 12px; padding: 14px 16px; }
+.cifras-impacto b { display: block; font-size: 32px; line-height: 1.1; color: var(--acento-oscuro); }
+.cifras-impacto span { display: block; margin-top: 6px; font-size: 14px; line-height: 1.35; color: var(--suave); }
+.cifras-impacto .cero b { color: var(--gris); opacity: .55; }
+.bloque-alcance .cifra { background: var(--primario-claro); border-color: transparent; }
+.bloque-alcance b { font-size: 42px; }
+.bloque-bienestar { --acento: #7CC6A4; --acento-oscuro: #2E7D5B; }
+.bloque-comunidad { --acento: #9B8AD1; --acento-oscuro: #5E4BA8; }
+.bloque-laboral { --acento: var(--sol); --acento-oscuro: var(--sol-oscuro); }
+.bloque-capacitacion { --acento: #6CA8D8; --acento-oscuro: #2D6E9E; }
+.bloque-niveles { --acento: var(--tinta); }
+@media (max-width: 860px) {
+  .cifras-impacto { grid-template-columns: repeat(2, 1fr); }
+  .bloque-impacto { padding: 18px 16px 20px; }
+  .cifras-impacto b { font-size: 28px; }
+  .bloque-alcance b { font-size: 34px; }
+}
+.descargar-reporte { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: -6px 0 18px; }
