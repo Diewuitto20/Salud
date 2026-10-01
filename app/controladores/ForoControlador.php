@@ -28,9 +28,9 @@ class ForoControlador extends Controlador
         $nota = (int) ($_POST['nota'] ?? 0);
         $destino = 'foro.php';
 
-        if ($texto !== '' && tieneGroserias($texto)) {
+        if ($texto !== '' && ($groseria = groseriaEn($texto)) !== null) {
             $_SESSION['borrador'] = $texto;
-            aviso('Tu mensaje tiene palabras ofensivas. Cámbialas para que este siga siendo un espacio seguro.', 'cuidado');
+            aviso('Tu mensaje tiene lenguaje ofensivo («' . e($groseria) . '»). Cámbialo para que este siga siendo un espacio seguro.', 'cuidado');
             redirigir($accion === 'nota' ? 'foro.php#nueva-nota' : 'foro.php#nota-' . $nota);
         }
         if ($accion === 'nota' && $texto !== '' && esTextoBasura($texto)) {

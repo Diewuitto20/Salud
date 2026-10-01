@@ -149,7 +149,7 @@ CREATE TABLE planes (
 
 CREATE TABLE plan_marcas (
   plan_id INT NOT NULL,
-  meta ENUM('respirar', 'curso', 'tramite') NOT NULL,
+  meta ENUM('respirar', 'respirar_listo', 'curso', 'postulaciones', 'tramite') NOT NULL,
   semana TINYINT NOT NULL,
   fecha DATE NOT NULL,
   PRIMARY KEY (plan_id, meta, fecha),

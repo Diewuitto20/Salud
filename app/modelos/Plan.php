@@ -4,7 +4,7 @@ defined('RAIZ') or exit;
 /*
  * Plan personalizado de 30 días: cuatro semanas con cuatro metas cada una.
  * Las postulaciones y el avance del curso se comprueban con lo que la persona ya hizo
- * en Vacantes y en Mis cursos; respirar, el tiempo de curso y el trámite los marca ella.
+ * en Vacantes y en Mis cursos; además, cualquier meta se puede marcar a mano como hecha.
  */
 class Plan extends Modelo
 {
@@ -13,6 +13,8 @@ class Plan extends Modelo
     public const RESPIRAR = ['minimo' => 3, 'leve' => 4, 'moderado' => 5, 'grave' => 7];
     public const POSTULACIONES = 2;
     public const HORAS_CURSO = [0 => 2, 1 => 4, 2 => 6];
+    /* «respirar» es la marca diaria; las demás marcan la meta completa de la semana */
+    public const MARCABLES = ['respirar', 'respirar_listo', 'curso', 'postulaciones', 'tramite'];
 
     public static function activo(int $usuario): ?array
     {
@@ -54,7 +56,7 @@ class Plan extends Modelo
     public static function alternar(array $plan, string $meta): bool
     {
         [, $semana] = self::hoy($plan);
-        if (!$semana || !in_array($meta, ['respirar', 'curso', 'tramite'], true) || ($meta === 'curso' && $semana === 1)) return false;
+        if (!$semana || !in_array($meta, self::MARCABLES, true)) return false;
         $condicion = $meta === 'respirar' ? 'fecha = CURDATE()' : 'semana = ?';
         $parametros = $meta === 'respirar' ? [$plan['id'], $meta] : [$plan['id'], $meta, $semana];
         if (self::consultar("DELETE FROM plan_marcas WHERE plan_id = ? AND meta = ? AND $condicion", $parametros)->rowCount()) {
@@ -96,7 +98,7 @@ class Plan extends Modelo
                 'titulo' => 'Ejercicio de respiración',
                 'detalle' => 'Hazlo ' . self::RESPIRAR[$plan['nivel']] . ' días esta semana: 4 tiempos al inhalar, 6 al soltar.',
                 'meta' => self::RESPIRAR[$plan['nivel']], 'hecho' => $diasRespiro, 'enlace' => 'ayuda.php', 'textoEnlace' => 'Respirar ahora',
-                'marcable' => $s === $semanaActual, 'marcadaHoy' => $respirarHoy, 'auto' => false,
+                'marcable' => $s === $semanaActual, 'marcadaHoy' => $respirarHoy, 'auto' => false, 'manual' => $marcada('respirar_listo'),
             ];
             if ($curso) {
                 $terminado = $curso['avance'] === 'Terminado';
@@ -108,27 +110,30 @@ class Plan extends Modelo
                 };
                 $metas['curso'] = [
                     'titulo' => $curso['nombre'], 'detalle' => $detalle,
-                    'meta' => 1, 'hecho' => ($terminado || ($s === 1 ? $inscrito : $marcada('curso'))) ? 1 : 0,
+                    'meta' => 1, 'hecho' => ($terminado || ($s === 1 && $inscrito)) ? 1 : 0,
                     'enlace' => $curso['enlace'], 'textoEnlace' => 'Abrir curso', 'externo' => true,
-                    'marcable' => $s === $semanaActual && $s > 1 && !$terminado, 'auto' => $s === 1 || $terminado,
+                    'marcable' => $s === $semanaActual, 'auto' => $s === 1 || $terminado, 'manual' => $marcada('curso'),
                 ];
             }
             $metas['postulaciones'] = [
                 'titulo' => 'Dos postulaciones',
                 'detalle' => 'Postúlate a ' . self::POSTULACIONES . ' vacantes. Solo cuentan las postulaciones hechas en ReActiva-T.',
                 'meta' => self::POSTULACIONES, 'hecho' => min($hechas, self::POSTULACIONES), 'enlace' => 'vacantes.php', 'textoEnlace' => 'Ver vacantes',
-                'marcable' => false, 'auto' => true,
+                'marcable' => $s === $semanaActual, 'auto' => true, 'manual' => $marcada('postulaciones'),
             ];
             $apoyo = Apoyo::CATALOGO[$tramites[$s - 1] ?? ''] ?? null;
             if ($apoyo) {
                 $metas['tramite'] = [
                     'titulo' => $apoyo['nombre'],
                     'detalle' => 'Reúne: ' . implode(', ', $apoyo['documentos']) . '.',
-                    'meta' => 1, 'hecho' => $marcada('tramite') ? 1 : 0, 'enlace' => $apoyo['enlace'], 'textoEnlace' => 'Página oficial', 'externo' => true,
-                    'marcable' => $s === $semanaActual, 'auto' => false,
+                    'meta' => 1, 'hecho' => 0, 'enlace' => $apoyo['enlace'], 'textoEnlace' => 'Página oficial', 'externo' => true,
+                    'marcable' => $s === $semanaActual, 'auto' => false, 'manual' => $marcada('tramite'),
                 ];
             }
-            foreach ($metas as &$m) $m['cumplida'] = $m['hecho'] >= $m['meta'];
+            foreach ($metas as &$m) {
+                $m['sola'] = $m['hecho'] >= $m['meta'];
+                $m['cumplida'] = $m['sola'] || $m['manual'];
+            }
             unset($m);
             $semanas[$s] = ['desde' => $desde, 'hasta' => $hasta, 'actual' => $s === $semanaActual, 'pasada' => $hasta < date('Y-m-d'), 'metas' => $metas];
         }

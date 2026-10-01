@@ -87,19 +87,26 @@ $nombresMeta = ['respirar' => 'Respirar', 'curso' => 'Un curso', 'postulaciones'
                     <p class="chico"><?= e($m['detalle']) ?></p>
                     <div class="acciones-meta">
                       <a href="<?= e($m['enlace']) ?>"<?= !empty($m['externo']) ? ' target="_blank" rel="noopener"' : '' ?>><?= $m['textoEnlace'] ?></a>
-                      <?php if ($m['marcable']): ?>
+                      <?php if ($m['marcable'] && $clave === 'respirar' && !$m['sola']): ?>
                         <form method="post">
                           <?= campoToken() ?>
                           <input type="hidden" name="accion" value="marcar">
-                          <input type="hidden" name="meta" value="<?= $clave ?>">
-                          <?php if ($clave === 'respirar'): ?>
-                            <button class="boton chico-boton <?= $m['marcadaHoy'] ? 'guardado' : 'linea' ?>" type="submit"><?= $m['marcadaHoy'] ? 'Hoy ya respiré ✓' : 'Hoy respiré' ?></button>
-                          <?php else: ?>
-                            <button class="boton chico-boton <?= $m['cumplida'] ? 'guardado' : 'linea' ?>" type="submit"><?= $m['cumplida'] ? 'Hecho ✓' : 'Marcar como hecho' ?></button>
-                          <?php endif; ?>
+                          <input type="hidden" name="meta" value="respirar">
+                          <button class="boton chico-boton <?= $m['marcadaHoy'] ? 'guardado' : 'linea' ?>" type="submit"><?= $m['marcadaHoy'] ? 'Hoy ya respiré ✓' : 'Hoy respiré' ?></button>
                         </form>
-                      <?php elseif ($m['auto']): ?>
-                        <span class="chico">Se marca automáticamente</span>
+                      <?php endif; ?>
+                      <?php if ($m['marcable'] && !$m['sola']): ?>
+                        <form method="post">
+                          <?= campoToken() ?>
+                          <input type="hidden" name="accion" value="marcar">
+                          <input type="hidden" name="meta" value="<?= $clave === 'respirar' ? 'respirar_listo' : $clave ?>">
+                          <button class="boton chico-boton <?= $m['manual'] ? 'guardado' : 'linea' ?>" type="submit"><?= $m['manual'] ? 'Hecho ✓' : ($clave === 'respirar' ? 'Marcar semana como hecha' : 'Marcar como hecho') ?></button>
+                        </form>
+                      <?php elseif ($m['sola']): ?>
+                        <span class="chico">Cumplida ✓</span>
+                      <?php endif; ?>
+                      <?php if ($m['auto'] && !$m['cumplida']): ?>
+                        <span class="chico">o se marca sola al cumplirla</span>
                       <?php endif; ?>
                     </div>
                   </div>

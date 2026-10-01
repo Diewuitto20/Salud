@@ -8,7 +8,7 @@ define('BD_PUERTO', (int) (getenv('MYSQLPORT') ?: ($url['port'] ?? $local['puert
 define('BD_NOMBRE', getenv('BD_NOMBRE') ?: ($local['nombre'] ?? 'retoma'));
 define('BD_USUARIO', getenv('MYSQLUSER') ?: (isset($url['user']) ? urldecode($url['user']) : ($local['usuario'] ?? '')));
 define('BD_CLAVE', getenv('MYSQLPASSWORD') ?: (isset($url['pass']) ? urldecode($url['pass']) : ($local['clave'] ?? '')));
-define('ESQUEMA_VERSION', 3);
+define('ESQUEMA_VERSION', 4);
 unset($url, $local);
 
 date_default_timezone_set('America/Mexico_City');
@@ -104,5 +104,12 @@ function actualizarEsquema(PDO $pdo): void
             PRIMARY KEY (usuario_id, curso_id),
             FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
         ) ENGINE=InnoDB");
+    }
+    /* Metas del plan que ahora también se marcan a mano */
+    $tipo = $pdo->prepare('SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?');
+    $tipo->execute([BD_NOMBRE, 'plan_marcas', 'meta']);
+    $actual = $tipo->fetchColumn();
+    if ($actual !== false && !str_contains($actual, 'postulaciones')) {
+        $pdo->exec("ALTER TABLE plan_marcas MODIFY meta ENUM('respirar', 'respirar_listo', 'curso', 'postulaciones', 'tramite') NOT NULL");
     }
 }

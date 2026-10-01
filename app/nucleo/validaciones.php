@@ -28,19 +28,95 @@ function temaSensible(string $texto): bool
     return false;
 }
 
-function tieneGroserias(string $texto): bool
+/*
+ * Groserías. Las listas se escriben normal; el texto y las listas pasan por la misma limpieza para que no se pueda
+ * esquivar el filtro con trucos: números por letras (p3nd3jo), k/q por c, v por b, z por s, x por ch, letras repetidas
+ * (puuuto), símbolos entre letras (p.u.t.o), letras sueltas (p u t o), asterisco por vocal (p*to) o sin vocales (pndjo).
+ */
+const GROSERIAS_RAICES = ['pendej', 'pinche', 'chinga', 'chingu', 'chingo', 'cabron', 'mierd', 'puta', 'puto', 'culer',
+    'culon', 'mamad', 'mamon', 'mames', 'ojete', 'jodid', 'joder', 'panoch', 'idiot', 'estupid', 'imbecil', 'huevon',
+    'guevon', 'retrasad', 'malparid', 'gilipoll', 'cagad', 'cagon', 'vergaz', 'vergot', 'putaz', 'cogert', 'pelotud', 'cojud'];
+const GROSERIAS_EXACTAS = ['pinchi', 'pinchis', 'naco', 'nacos', 'naca', 'nacas', 'joto', 'jotos', 'mongol', 'mongolo', 'mongola', 'marica', 'maricas',
+    'maricon', 'maricones', 'mariconada', 'culo', 'culos', 'perra', 'perras', 'zorra', 'zorras', 'verga', 'vergas', 'coño',
+    'carajo', 'ptm', 'ptmr', 'alv', 'hdp', 'hdtpm', 'ctm', 'vrg', 'pndj', 'pndjo', 'pndja', 'qlo', 'qlero', 'hpta',
+    'fuck', 'fucking', 'shit', 'bitch', 'asshole', 'wtf', 'stfu'];
+const GROSERIAS_DENTRO = ['pendej', 'chingad', 'chingues', 'cabron', 'mierd', 'putamadre', 'hijodeput', 'hijueput',
+    'alaverga', 'valemadre', 'malparid'];
+const GROSERIAS_FRASES = ['vale madre', 'valio madre', 'valer madre', 'me la pelas', 'te la pelas', 'me la pela',
+    'chinga tu', 'tu puta', 'hijo de tu', 'hija de tu', 'mentada de madre', 'mentar la madre'];
+/* Insultos que también se usan contra uno mismo («me siento un idiota»): en ese caso no se bloquean */
+const GROSERIAS_SUAVES = ['idiot', 'estupid', 'imbecil'];
+
+function normalizarFiltro(string $texto): string
 {
-    $t = strtr(sinAcentos($texto), ['0' => 'o', '1' => 'i', '3' => 'e', '4' => 'a', '@' => 'a', '$' => 's', '5' => 's', '7' => 't']);
-    $t = preg_replace('/(.)\1{2,}/u', '$1', $t);
-    $raices = ['pendej', 'pinche', 'chinga', 'chingue', 'chingon', 'chingad', 'verga', 'culer', 'cabron', 'mierda',
-        'puto', 'puta', 'putos', 'putas', 'joto', 'maric', 'mamada', 'mamon', 'mames', 'ojete', 'perra', 'zorra',
-        'idiota', 'estupid', 'imbecil', 'huevon', 'jodid', 'joder', 'culo', 'panocha', 'naco', 'nacos', 'retrasad', 'mongol'];
-    foreach (preg_split('/[^a-zñ]+/u', $t) as $palabra) {
-        foreach ($raices as $r) {
-            if ($palabra !== '' && str_starts_with($palabra, $r)) return true;
+    $t = sinAcentos($texto);
+    $t = preg_replace('/(?<=[a-zñ])[!|](?=[a-zñ])/u', 'i', $t);
+    $t = strtr($t, ['0' => 'o', '1' => 'i', '3' => 'e', '4' => 'a', '@' => 'a', '$' => 's', '5' => 's', '7' => 't',
+        '8' => 'b', 'k' => 'c', 'q' => 'c', 'v' => 'b', 'z' => 's', 'x' => 'ch']);
+    return preg_replace('/(?<=[a-zñ*])[.\-_·\'"´`~^+]+(?=[a-zñ*])/u', '', $t);
+}
+
+/* Palabras del texto ya limpias; las letras sueltas seguidas (p u t o) se unen en una palabra extra */
+function palabrasFiltro(string $texto): array
+{
+    $palabras = preg_split('/[^a-zñ*]+/u', normalizarFiltro($texto), -1, PREG_SPLIT_NO_EMPTY);
+    $sueltas = '';
+    foreach (array_merge($palabras, ['  ']) as $p) {
+        if (mb_strlen($p) === 1) {
+            $sueltas .= $p;
+            continue;
+        }
+        if (mb_strlen($sueltas) >= 3) $palabras[] = $sueltas;
+        $sueltas = '';
+    }
+    return $palabras;
+}
+
+/* Convierte una raíz en regex: cada letra puede repetirse, «*» cuenta como vocal y en raíces largas las vocales internas son opcionales */
+function patronFiltro(string $raiz, bool $vocalesOpcionales): string
+{
+    $letras = mb_str_split(implode('', palabrasFiltro($raiz)));
+    $patron = '';
+    foreach ($letras as $i => $c) {
+        $vocal = str_contains('aeiou', $c);
+        $clase = $vocal ? "[$c*]" : preg_quote($c, '/');
+        $opcional = $vocal && $vocalesOpcionales && $i > 0 && $i < count($letras) - 1;
+        $patron .= $clase . ($opcional ? '*' : '+');
+    }
+    return $patron;
+}
+
+/* Devuelve la grosería encontrada (tal como está en la lista) o null */
+function groseriaEn(string $texto): ?string
+{
+    static $reglas = null;
+    if ($reglas === null) {
+        $reglas = [];
+        foreach (GROSERIAS_EXACTAS as $g) $reglas[] = [$g, '/^' . patronFiltro($g, false) . '$/u'];
+        foreach (GROSERIAS_RAICES as $g) $reglas[] = [$g, '/^' . patronFiltro($g, mb_strlen($g) >= 5) . '/u'];
+        foreach (GROSERIAS_DENTRO as $g) $reglas[] = [$g, '/' . patronFiltro($g, false) . '/u'];
+    }
+    if (str_contains($texto, '🖕')) return '🖕';
+
+    $palabras = palabrasFiltro($texto);
+    foreach ($palabras as $i => $palabra) {
+        foreach ($reglas as [$g, $regex]) {
+            if (!preg_match($regex, $palabra)) continue;
+            $antes = ' ' . implode(' ', array_slice($palabras, max(0, $i - 3), min($i, 3))) . ' ';
+            if (in_array($g, GROSERIAS_SUAVES, true) && preg_match('/ (soy|siento|senti|sentia|sentir|fui) /', $antes)) continue;
+            return $g;
         }
     }
-    return false;
+    $frase = ' ' . implode(' ', $palabras) . ' ';
+    foreach (GROSERIAS_FRASES as $f) {
+        if (str_contains($frase, ' ' . implode(' ', palabrasFiltro($f)) . ' ')) return $f;
+    }
+    return null;
+}
+
+function tieneGroserias(string $texto): bool
+{
+    return groseriaEn($texto) !== null;
 }
 
 function esTextoBasura(string $texto): bool
