@@ -77,6 +77,10 @@ function actualizarEsquema(PDO $pdo): void
         $sql = file_get_contents(__DIR__ . '/../sql/retoma.sql');
         $pdo->exec(substr($sql, strpos($sql, 'CREATE TABLE denuncias')));
     }
+    if (!existe($pdo, 'planes')) {
+        $sql = file_get_contents(__DIR__ . '/../sql/retoma.sql');
+        $pdo->exec(substr($sql, strpos($sql, 'CREATE TABLE planes')));
+    }
     if (!existe($pdo, 'cursos_guardados')) {
         $pdo->exec("CREATE TABLE cursos_guardados (
             usuario_id INT NOT NULL,

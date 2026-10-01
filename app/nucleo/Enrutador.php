@@ -18,6 +18,8 @@ class Enrutador
         'apoyos.php' => ['ApoyoControlador', 'index', 'alternar'],
         'avance.php' => ['RutaControlador', 'index', 'procesar'],
         'valia.php' => ['ValiaControlador', 'index', 'procesar'],
+        'plan.php' => ['PlanControlador', 'index', 'procesar'],
+        'impacto.php' => ['ImpactoControlador', 'index', null],
         'ayuda.php' => ['AyudaControlador', 'index', null],
         'privacidad.php' => ['PaginaControlador', 'privacidad', null],
         'seguimiento.php' => ['PaginaControlador', 'seguimiento', null],

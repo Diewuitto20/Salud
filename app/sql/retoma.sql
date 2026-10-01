@@ -2,7 +2,7 @@ SET NAMES utf8mb4;
 CREATE DATABASE IF NOT EXISTS retoma CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE retoma;
 
-DROP TABLE IF EXISTS preferencias, apoyos_guardados, valia, denuncias, cursos_guardados, postulaciones, vacantes, evaluaciones, comentarios, apoyos, notas, usuarios;
+DROP TABLE IF EXISTS plan_marcas, planes, preferencias, apoyos_guardados, valia, denuncias, cursos_guardados, postulaciones, vacantes, evaluaciones, comentarios, apoyos, notas, usuarios;
 
 CREATE TABLE usuarios (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -131,4 +131,26 @@ CREATE TABLE preferencias (
   avisar_cursos TINYINT(1) NOT NULL DEFAULT 0,
   ultima_visita DATETIME NULL,
   FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE planes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT NOT NULL,
+  nivel VARCHAR(12) NOT NULL,
+  estado VARCHAR(20) NOT NULL,
+  interes ENUM('oficio', 'emprender') NOT NULL,
+  curso_id INT NULL,
+  tramites VARCHAR(200) NOT NULL,
+  inicio DATE NOT NULL,
+  creado DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE plan_marcas (
+  plan_id INT NOT NULL,
+  meta ENUM('respirar', 'curso', 'tramite') NOT NULL,
+  semana TINYINT NOT NULL,
+  fecha DATE NOT NULL,
+  PRIMARY KEY (plan_id, meta, fecha),
+  FOREIGN KEY (plan_id) REFERENCES planes(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;

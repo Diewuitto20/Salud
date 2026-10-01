@@ -6,7 +6,7 @@
     <div class="pie-dentro">
       <span>¿Momento muy difícil? <a href="tel:8009112000"><b>Línea de la Vida 800 911 2000</b></a> · gratuita, 24 horas</span>
       <?php if (!esPersona()): ?><span><a class="enlace-pie" href="empresas.php">¿Tienes una vacante? Ayuda a alguien: publícala gratis</a></span><?php endif; ?>
-      <span><a class="enlace-pie" href="privacidad.php">Aviso de privacidad</a> · ReActiva-T: reactiva tu vida y tu trabajo · HackaTec 2026</span>
+      <span><a class="enlace-pie" href="privacidad.php">Aviso de privacidad</a> · <a class="enlace-pie" href="impacto.php">Resultados del reto</a> · ReActiva-T: reactiva tu vida y tu trabajo · HackaTec 2026</span>
     </div>
   </div>
 </footer>

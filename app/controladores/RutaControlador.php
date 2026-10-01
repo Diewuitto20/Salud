@@ -19,6 +19,7 @@ class RutaControlador extends Controlador
         $estadoUsuario = $this->estadoActual();
         $novedades = $preferencias['avisar_vacantes'] ? Vacante::nuevasDesde($preferencias['ultima_visita'] ?? '2000-01-01', $estadoUsuario) : [];
         Preferencia::registrarVisita($yo);
+        $plan = Plan::activo($yo);
 
         $this->vista('ruta/index', [
             'titulo' => 'Mi ruta',
@@ -34,6 +35,9 @@ class RutaControlador extends Controlador
             'valia' => Valia::conteo($yo),
             'preferencias' => $preferencias,
             'novedades' => $novedades,
+            'plan' => $plan,
+            'avancePlan' => $plan ? Plan::avance(Plan::calendario($plan)) : [0, 0],
+            'diaPlan' => $plan ? Plan::hoy($plan)[0] : 0,
         ]);
     }
 

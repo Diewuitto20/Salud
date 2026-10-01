@@ -465,3 +465,50 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .campo-moneda input { margin-top: 0; }
 .aviso-campo { display: block; font-size: 14px; color: #9A3B28; background: #FFE6DF; border-radius: 8px; padding: 8px 12px; margin-top: 6px; }
 .aviso-campo[hidden] { display: none; }
+
+/* Plan de 30 días */
+.plan-crear { max-width: 620px; margin-top: 22px; }
+.opciones-plan { border: 0; display: grid; gap: 8px; }
+.opciones-plan legend { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.opciones-plan .casilla { font-size: 16px; color: var(--tinta); }
+.resumen-plan { display: flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap; background: var(--superficie); border: 1px solid var(--linea); border-radius: var(--radio); padding: 18px 22px; margin: 22px 0 18px; }
+.dia-plan { font-size: 22px; }
+.avance-plan { min-width: 240px; flex: 1; max-width: 380px; }
+.barra-avance { height: 12px; background: var(--primario-claro); border-radius: 999px; overflow: hidden; margin-top: 6px; }
+.barra-avance span { display: block; height: 100%; background: var(--primario); border-radius: 999px; }
+.calendario-plan { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 18px; }
+.semana-plan { background: var(--superficie); border: 1px solid var(--linea); border-radius: var(--radio); padding: 22px; }
+.semana-plan h2 { font-size: 22px; margin: 0; }
+.semana-actual { border: 2px solid var(--primario); box-shadow: var(--sombra); }
+.estado-semana { font-size: 13px; font-weight: 800; padding: 3px 10px; border-radius: 999px; }
+.estado-curso { background: var(--primario); color: #fff; }
+.estado-cumplida { background: var(--primario-claro); color: var(--primario-oscuro); }
+.estado-pasada { background: var(--linea); color: var(--suave); }
+.estado-proxima { background: var(--sol-claro); color: var(--sol-oscuro); }
+.metas-plan { list-style: none; display: grid; gap: 12px; margin-top: 14px; }
+.meta-plan { display: grid; grid-template-columns: 26px 1fr; gap: 10px; padding-top: 12px; border-top: 1px solid var(--linea); }
+.meta-plan p { margin: 0; }
+.palomita { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--linea); display: grid; place-items: center; font-weight: 800; color: #fff; font-size: 14px; }
+.meta-cumplida .palomita { background: var(--primario); border-color: var(--primario); }
+.meta-tipo { font-size: 13px; font-weight: 800; color: var(--sol-oscuro); text-transform: uppercase; letter-spacing: .03em; }
+.acciones-meta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 8px; font-size: 15px; }
+.rehacer { margin-top: 22px; }
+.rehacer summary { cursor: pointer; }
+
+/* Resultados del reto */
+.huella { font-family: ui-monospace, Menlo, monospace; letter-spacing: .04em; }
+.cifras-impacto b { font-size: 34px; }
+.barras-niveles { display: grid; gap: 10px; margin-top: 14px; max-width: 760px; }
+.fila-nivel { display: grid; grid-template-columns: 190px 1fr 90px; gap: 12px; align-items: center; }
+.pista { height: 16px; background: var(--linea); border-radius: 999px; overflow: hidden; }
+.pista i { display: block; height: 100%; border-radius: 999px; }
+.pista .barra-minimo { background: var(--primario); }
+.pista .barra-leve { background: #F2C14E; }
+.pista .barra-moderado { background: var(--sol); }
+.pista .barra-grave { background: var(--urgente); }
+
+@media (max-width: 860px) {
+  .calendario-plan { grid-template-columns: 1fr; }
+  .fila-nivel { grid-template-columns: 1fr 90px; }
+  .fila-nivel .pista { grid-column: 1 / -1; grid-row: 2; }
+}

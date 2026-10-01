@@ -24,7 +24,7 @@ abstract class Controlador
         } else {
             $enlaces = ['foro.php' => 'Foro', 'cuestionario.php' => 'Cuestionario', 'cursos.php' => 'Cursos', 'apoyos.php' => 'Apoyos', 'vacantes.php' => 'Vacantes'];
             if (esPersona()) {
-                $enlaces = ['avance.php' => 'Mi ruta', 'valia.php' => 'Mi valía'] + $enlaces;
+                $enlaces = ['avance.php' => 'Mi ruta', 'plan.php' => 'Mi plan', 'valia.php' => 'Mi valía'] + $enlaces;
             }
         }
         if (esLocal() && !usuario()) {

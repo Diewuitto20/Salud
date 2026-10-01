@@ -56,6 +56,19 @@
       </article>
 
       <article class="panel">
+        <h2>Mi plan de 30 días</h2>
+        <?php if ($plan): [$cumplidasPlan, $totalPlan] = $avancePlan; ?>
+          <p class="suave"><?= $diaPlan <= Plan::DIAS ? "Vas en el día <b>$diaPlan</b> de 30." : 'Terminaste tu plan. Arma uno nuevo.' ?></p>
+          <div class="barra-avance"><span style="width: <?= $totalPlan ? round($cumplidasPlan / $totalPlan * 100) : 0 ?>%"></span></div>
+          <p class="chico"><?= $cumplidasPlan ?> de <?= $totalPlan ?> metas cumplidas</p>
+          <a class="boton chico-boton" href="plan.php#semana-actual">Ver mi semana</a>
+        <?php else: ?>
+          <p class="suave">Un calendario semanal hecho para ti: respirar, un curso, dos postulaciones y un trámite.</p>
+          <a class="boton chico-boton" href="plan.php">Armar mi plan</a>
+        <?php endif; ?>
+      </article>
+
+      <article class="panel">
         <h2>Mi mapa de valía</h2>
         <div class="cifras cifras-2">
           <div><b><?= $valia['logro'] ?></b><span>logros</span></div>
