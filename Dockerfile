@@ -8,6 +8,6 @@ RUN docker-php-ext-install pdo_mysql \
 COPY . /var/www/html/
 RUN chown -R www-data:www-data /var/www/html
 
-CMD sed -i "s/Listen 80/Listen ${PORT:-80}/" /etc/apache2/ports.conf \
-    && sed -i "s/:80>/:${PORT:-80}>/" /etc/apache2/sites-enabled/000-default.conf \
-    && apache2-foreground
+RUN mv /var/www/html/iniciar.sh /usr/local/bin/iniciar.sh && chmod +x /usr/local/bin/iniciar.sh
+
+CMD ["/usr/local/bin/iniciar.sh"]

@@ -5,3 +5,8 @@ Claude outputs
 *.command
 app/servidor.php
 .DS_Store
+Dockerfile
+.dockerignore
+railway.json
+composer.json
+*.png
