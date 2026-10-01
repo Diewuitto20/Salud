@@ -32,7 +32,7 @@
     <h2>Qué encuentras aquí</h2>
     <div class="rejilla-4">
       <a class="tarjeta" href="foro.php"><span class="num">1</span><h3>Foro de apoyo</h3><p>Deja una nota o lee a otras personas que ya pasaron por esto.</p></a>
-      <a class="tarjeta" href="cuestionario.php"><span class="num">2</span><h3>Cuestionario</h3><p>Diez preguntas para saber cómo te ha afectado el desempleo y si conviene pedir ayuda.</p></a>
+      <a class="tarjeta" href="cuestionario.php"><span class="num">2</span><h3>Cuestionario</h3><p>Doce preguntas para saber cómo te ha afectado el desempleo y si conviene pedir ayuda.</p></a>
       <a class="tarjeta" href="cursos.php"><span class="num">3</span><h3>Cursos</h3><p>Aprende un oficio o a emprender mientras llega el empleo que buscas.</p></a>
       <a class="tarjeta" href="vacantes.php"><span class="num">4</span><h3>Vacantes</h3><p><?php if ($vacantes > 0): ?>Hoy hay <b><?= $vacantes ?> lugares</b> disponibles en empresas que quieren ayudar.<?php else: ?>Empresas solidarias publican aquí los lugares que ofrecen.<?php endif; ?></p></a>
     </div>

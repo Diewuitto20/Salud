@@ -1,7 +1,7 @@
 <?php defined('RAIZ') or exit; ?>
 <section class="crisis">
   <div class="contenedor angosto">
-    <p class="antetitulo">No estás solo</p>
+    <p class="antetitulo">No estás a solas</p>
     <h1 class="titulo-pagina">Lo que sientes importa, y hay gente lista para escucharte ahora.</h1>
     <p class="entrada">No tienes que decidir nada en este momento. Elige una sola cosa de esta página.</p>
 

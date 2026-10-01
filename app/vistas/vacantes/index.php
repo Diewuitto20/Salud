@@ -57,7 +57,7 @@
             <?php if ($v['postulado']): ?>
               <span class="estado-ok">Ya te postulaste</span>
             <?php elseif ($v['libres'] < 1): ?>
-              <span class="estado-lleno">Cupos llenos</span>
+              <span class="estado-lleno">Sin lugares disponibles</span>
             <?php elseif (esPersona()): ?>
               <details class="postular">
                 <summary class="boton">Me postulo</summary>

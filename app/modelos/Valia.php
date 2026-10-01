@@ -4,7 +4,7 @@ defined('RAIZ') or exit;
 /* Mapa de valía: logros y cualidades privados de cada persona */
 class Valia extends Modelo
 {
-    public const SUGERENCIAS = ['Soy responsable', 'Aprendo rápido', 'Sé trabajar en equipo', 'Soy puntual', 'Cuido a mi familia', 'No me rindo fácil', 'Sé tratar con clientes', 'Soy creativo'];
+    public const SUGERENCIAS = ['Soy responsable', 'Aprendo rápido', 'Sé trabajar en equipo', 'Soy puntual', 'Cuido a mi familia', 'No me rindo fácil', 'Sé tratar con clientes', 'Tengo buenas ideas'];
 
     public static function deUsuario(int $usuario): array
     {

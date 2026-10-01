@@ -93,8 +93,8 @@ class Plan extends Modelo
 
             $metas = [];
             $metas['respirar'] = [
-                'titulo' => 'Respirar',
-                'detalle' => 'Ejercicio de respiración (4 tiempos al inhalar, 6 al soltar) ' . self::RESPIRAR[$plan['nivel']] . ' días esta semana.',
+                'titulo' => 'Ejercicio de respiración',
+                'detalle' => 'Hazlo ' . self::RESPIRAR[$plan['nivel']] . ' días esta semana: 4 tiempos al inhalar, 6 al soltar.',
                 'meta' => self::RESPIRAR[$plan['nivel']], 'hecho' => $diasRespiro, 'enlace' => 'ayuda.php', 'textoEnlace' => 'Respirar ahora',
                 'marcable' => $s === $semanaActual, 'marcadaHoy' => $respirarHoy, 'auto' => false,
             ];
@@ -115,7 +115,7 @@ class Plan extends Modelo
             }
             $metas['postulaciones'] = [
                 'titulo' => 'Dos postulaciones',
-                'detalle' => 'Postúlate a ' . self::POSTULACIONES . ' vacantes. Se cuenta solo cuando te postulas en ReActiva-T.',
+                'detalle' => 'Postúlate a ' . self::POSTULACIONES . ' vacantes. Solo cuentan las postulaciones hechas en ReActiva-T.',
                 'meta' => self::POSTULACIONES, 'hecho' => min($hechas, self::POSTULACIONES), 'enlace' => 'vacantes.php', 'textoEnlace' => 'Ver vacantes',
                 'marcable' => false, 'auto' => true,
             ];

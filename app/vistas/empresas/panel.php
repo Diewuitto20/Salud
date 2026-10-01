@@ -36,7 +36,7 @@
         <label><span>Modalidad <span class="obligatorio">*</span></span>
             <select name="modalidad" required><option>Presencial</option><option>Remoto</option><option>Mixto</option></select>
           </label>
-          <label><span>Número de vacantes disponibles <span class="obligatorio">*</span></span><input type="text" name="cupos" id="cupos" value="1" required inputmode="numeric" maxlength="2" pattern="([1-9]|[1-4][0-9]|50)" title="Escribe un número del 1 al 50" autocomplete="off"><span class="opcional">De 1 a 50</span></label>
+          <label><span>Número de lugares disponibles <span class="obligatorio">*</span></span><input type="text" name="cupos" id="cupos" value="1" required inputmode="numeric" maxlength="2" pattern="([1-9]|[1-4][0-9]|50)" title="Escribe un número del 1 al 50" autocomplete="off"><span class="opcional">De 1 a 50</span></label>
         <button class="boton" type="submit">Publicar</button>
       </form>
       <dialog class="dialogo" id="confirmar-vacante" aria-labelledby="titulo-vacante">

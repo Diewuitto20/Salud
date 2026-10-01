@@ -34,7 +34,7 @@
       <article class="panel">
         <h2>Cómo te has sentido</h2>
         <?php if ($evaluaciones): ?>
-          <p class="suave">Puntaje de cada cuestionario, de 0 a 36. Entre más bajo, mejor.</p>
+          <p class="suave">Puntaje de cada cuestionario, de 0 a 36. Cuanto más bajo, mejor.</p>
           <div class="grafica"><?= graficaEvaluaciones(array_slice($evaluaciones, -8)) ?></div>
           <?php if (count($evaluaciones) > 1):
               $cambio = $primera['total'] - $ultima['total']; ?>

@@ -99,7 +99,7 @@ $nombresMeta = ['respirar' => 'Respirar', 'curso' => 'Un curso', 'postulaciones'
                           <?php endif; ?>
                         </form>
                       <?php elseif ($m['auto']): ?>
-                        <span class="chico">Se marca solo</span>
+                        <span class="chico">Se marca automáticamente</span>
                       <?php endif; ?>
                     </div>
                   </div>

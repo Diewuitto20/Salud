@@ -9,7 +9,7 @@ class PaginaControlador extends Controlador
         $this->vista('paginas/privacidad', [
             'titulo' => 'Aviso de privacidad',
             'responsable' => 'Equipo ReActiva-T (proyecto HackaTec 2026)',
-            'correoContacto' => '[escribe aquí el correo del equipo]',
+            'correoContacto' => 'l23240012@smartin.tecnm.mx',
         ]);
     }
 

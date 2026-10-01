@@ -64,7 +64,7 @@ class Vacante extends Modelo
             return 'Revisa el sueldo: la cantidad es demasiado alta.';
         }
         if ($datos['cupos'] === false || $datos['cupos'] < 1 || $datos['cupos'] > self::MAX_LUGARES) {
-            return 'El número de vacantes disponibles debe ser de 1 a 50.';
+            return 'El número de lugares debe ser de 1 a 50.';
         }
         if (tieneGroserias($datos['titulo'] . ' ' . $datos['descripcion'])) {
             return 'La vacante tiene palabras ofensivas. Cámbialas, por favor.';

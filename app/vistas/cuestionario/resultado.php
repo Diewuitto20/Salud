@@ -47,7 +47,7 @@
       </div>
     <?php elseif (($r['casiDiario'] ?? 0) >= 4 || $r['nivel'] === 'grave'): ?>
       <div class="caja-ayuda contencion">
-        <h2>Lo que estás viviendo es mucho para cargarlo solo</h2>
+        <h2>Lo que estás viviendo es mucho para cargarlo a solas</h2>
         <p>Varias de tus respuestas dicen que esto te pasa casi todos los días. No es exagerar ni ser débil: es una señal de que mereces apoyo ahora, no después.</p>
         <div class="acciones">
           <a class="boton urgente" href="ayuda.php">Ir a la página de ayuda</a>
@@ -69,7 +69,7 @@
     <?php if (!$r['crisis']): ?>
       <a class="banda-apoyos" href="apoyos.php">
         <b>Apoyos del gobierno para quien perdió su empleo</b>
-        <span>Seguro de desempleo, becas de capacitación, retiro por desempleo de tu AFORE y más →</span>
+        <span>Atención médica del IMSS, becas de capacitación, retiro por desempleo de tu AFORE y más →</span>
       </a>
 
       <h2 class="subtitulo">Aprende un oficio mientras llega el empleo</h2>
