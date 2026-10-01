@@ -29,7 +29,7 @@ class Nota extends Modelo
         if (!$ids) return [];
         $comentarios = [];
         $marcas = implode(',', array_fill(0, count($ids), '?'));
-        foreach (self::consultar("SELECT c.nota_id, c.texto, c.sensible, c.creado, u.nombre FROM comentarios c JOIN usuarios u ON u.id = c.usuario_id
+        foreach (self::consultar("SELECT c.id, c.usuario_id, c.nota_id, c.texto, c.sensible, c.creado, u.nombre FROM comentarios c JOIN usuarios u ON u.id = c.usuario_id
             WHERE c.nota_id IN ($marcas) ORDER BY c.creado", $ids) as $c) {
             $comentarios[$c['nota_id']][] = $c;
         }
@@ -78,6 +78,17 @@ class Nota extends Modelo
     {
         self::consultar('DELETE FROM denuncias WHERE nota_id = ?', [$nota]);
         self::consultar('UPDATE notas SET oculta = 0 WHERE id = ?', [$nota]);
+    }
+
+    /* Cada persona solo puede borrar lo que ella escribió */
+    public static function borrarPropia(int $nota, int $yo): bool
+    {
+        return (bool) self::consultar('DELETE FROM notas WHERE id = ? AND usuario_id = ?', [$nota, $yo])->rowCount();
+    }
+
+    public static function borrarComentarioPropio(int $comentario, int $yo): bool
+    {
+        return (bool) self::consultar('DELETE FROM comentarios WHERE id = ? AND usuario_id = ?', [$comentario, $yo])->rowCount();
     }
 
     public static function eliminar(int $nota): void

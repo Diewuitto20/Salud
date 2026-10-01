@@ -543,3 +543,5 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
   .bloque-alcance b { font-size: 34px; }
 }
 .descargar-reporte { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: -6px 0 18px; }
+.form-borrar-comentario { display: inline; }
+.borrar { background: none; border: 0; padding: 0 2px; color: var(--urgente); font: 700 13px "Nunito", sans-serif; cursor: pointer; text-decoration: underline; }

@@ -8,7 +8,7 @@ define('BD_PUERTO', (int) (getenv('MYSQLPORT') ?: ($url['port'] ?? $local['puert
 define('BD_NOMBRE', getenv('BD_NOMBRE') ?: ($local['nombre'] ?? 'retoma'));
 define('BD_USUARIO', getenv('MYSQLUSER') ?: (isset($url['user']) ? urldecode($url['user']) : ($local['usuario'] ?? '')));
 define('BD_CLAVE', getenv('MYSQLPASSWORD') ?: (isset($url['pass']) ? urldecode($url['pass']) : ($local['clave'] ?? '')));
-define('ESQUEMA_VERSION', 6);
+define('ESQUEMA_VERSION', 7);
 unset($url, $local);
 
 date_default_timezone_set('America/Mexico_City');
@@ -56,6 +56,15 @@ function actualizarEsquema(PDO $pdo): void
     /* Cursos de Tlaxcala con enlaces caídos: se quitan también de bases ya creadas */
     $pdo->exec("DELETE FROM cursos WHERE enlace LIKE '%tlaxcaladigital.gob.mx%' OR enlace LIKE '%icatlax.edu.mx%'");
     if (existe($pdo, 'cursos_guardados')) $pdo->exec('DELETE g FROM cursos_guardados g LEFT JOIN cursos c ON c.id = g.curso_id WHERE c.id IS NULL');
+    /* Notas y respuestas que ya incitaban a hacerse daño o humillaban: las notas pasan a moderación y las respuestas se borran */
+    if (function_exists('agresionEn') && existe($pdo, 'comentarios')) {
+        foreach ($pdo->query('SELECT id, texto FROM notas WHERE oculta = 0')->fetchAll() as $n) {
+            if (agresionEn($n['texto']) !== null) $pdo->prepare('UPDATE notas SET oculta = 1 WHERE id = ?')->execute([$n['id']]);
+        }
+        foreach ($pdo->query('SELECT id, texto FROM comentarios')->fetchAll() as $c) {
+            if (agresionEn($c['texto']) !== null) $pdo->prepare('DELETE FROM comentarios WHERE id = ?')->execute([$c['id']]);
+        }
+    }
     if (!existe($pdo, 'usuarios', 'acepta_seguimiento')) {
         $indice = $pdo->query("SHOW INDEX FROM usuarios WHERE Key_name = 'nombre_por_tipo'")->fetch();
         if ($indice) $pdo->exec('ALTER TABLE usuarios DROP INDEX nombre_por_tipo');

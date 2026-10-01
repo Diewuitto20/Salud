@@ -28,6 +28,11 @@ class ForoControlador extends Controlador
         $nota = (int) ($_POST['nota'] ?? 0);
         $destino = 'foro.php';
 
+        if ($texto !== '' && agresionEn($texto) !== null) {
+            $_SESSION['borrador'] = $accion === 'nota' ? $texto : '';
+            aviso('Tu mensaje puede lastimar a alguien que ya está pasando por un momento difícil, así que no se publicó. Aquí nos apoyamos: escribe como te gustaría que te hablaran.', 'cuidado');
+            redirigir($accion === 'nota' ? 'foro.php#nueva-nota' : 'foro.php#nota-' . $nota);
+        }
         if ($texto !== '' && ($groseria = groseriaEn($texto)) !== null) {
             $_SESSION['borrador'] = $texto;
             aviso('Tu mensaje tiene lenguaje ofensivo («' . e($groseria) . '»). Cámbialo para que este siga siendo un espacio seguro.', 'cuidado');
@@ -51,6 +56,13 @@ class ForoControlador extends Controlador
             $color = in_array($_POST['color'] ?? '', Nota::COLORES, true) ? $_POST['color'] : 'amarillo';
             Nota::crear($yo, $texto, $color, isset($_POST['sensible']) || temaSensible($texto));
             hayCrisis($texto) ? aviso(avisoCrisis(), 'cuidado') : aviso('Tu nota ya está en el muro. Gracias por compartir.');
+        }
+        if ($accion === 'borrar_nota') {
+            Nota::borrarPropia($nota, $yo) ? aviso('Borraste tu nota.') : aviso('Solo puedes borrar tus propias notas.', 'cuidado');
+        }
+        if ($accion === 'borrar_comentario') {
+            $destino .= '#nota-' . $nota;
+            Nota::borrarComentarioPropio((int) ($_POST['comentario'] ?? 0), $yo) ? aviso('Borraste tu respuesta.') : aviso('Solo puedes borrar tus propias respuestas.', 'cuidado');
         }
         if ($accion === 'apoyo') {
             Nota::alternarApoyo($nota, $yo);

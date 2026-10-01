@@ -114,6 +114,33 @@ function groseriaEn(string $texto): ?string
     return null;
 }
 
+/*
+ * Agresiones contra otra persona: incitar a hacerse daño, desearle la muerte o humillarla. En un espacio de salud mental
+ * se bloquean aunque no lleven groserías. Lo que alguien dice de sí mismo («me siento un fracaso») no entra aquí.
+ */
+const AGRESIONES_RAICES = ['matat', 'matese', 'suicidat', 'suicidese', 'muerete', 'muerase', 'cuelgat', 'ahorcat', 'aventat', 'tirat'];
+const AGRESIONES_FRASES = ['ojala te mueras', 'ojala te murieras', 'deberias morirte', 'deberias matarte', 'te deberias morir',
+    'te deberias matar', 'por que no te matas', 'porque no te matas', 'vete a morir', 'mejor muerete', 'quitate la vida',
+    'no mereces vivir', 'nadie te quiere', 'nadie te va a querer', 'no sirves', 'no vales nada', 'das asco', 'das lastima',
+    'eres un fracaso', 'eres una fracasada', 'eres un fracasado', 'eres basura', 'eres una basura', 'eres una carga',
+    'eres un inutil', 'eres una inutil', 'eres un estorbo', 'eres una lacra', 'por eso te corrieron',
+    'deja de llorar', 'no te hagas la victima', 'callate'];
+
+function agresionEn(string $texto): ?string
+{
+    $palabras = palabrasFiltro($texto);
+    foreach ($palabras as $palabra) {
+        foreach (AGRESIONES_RAICES as $raiz) {
+            if (preg_match('/^' . patronFiltro($raiz, false) . '/u', $palabra)) return $raiz;
+        }
+    }
+    $frase = ' ' . implode(' ', $palabras) . ' ';
+    foreach (AGRESIONES_FRASES as $f) {
+        if (str_contains($frase, ' ' . implode(' ', palabrasFiltro($f)) . ' ')) return $f;
+    }
+    return null;
+}
+
 function tieneGroserias(string $texto): bool
 {
     return groseriaEn($texto) !== null;

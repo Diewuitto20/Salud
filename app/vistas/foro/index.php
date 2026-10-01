@@ -59,6 +59,14 @@
               <input type="hidden" name="nota" value="<?= $n['id'] ?>">
               <button class="apoyo <?= $n['mio'] ? 'dado' : '' ?>" type="submit" <?= esPersona() ? '' : 'disabled' ?>>Te apoyo · <?= $n['apoyos'] ?></button>
             </form>
+            <?php if (esPersona() && (int) $n['usuario_id'] === usuario()['id']): ?>
+              <form method="post" class="form-borrar" onsubmit="return confirm('¿Borrar tu nota? Se borran también sus respuestas.')">
+                <?= campoToken() ?>
+                <input type="hidden" name="accion" value="borrar_nota">
+                <input type="hidden" name="nota" value="<?= $n['id'] ?>">
+                <button class="borrar" type="submit">Borrar</button>
+              </form>
+            <?php endif; ?>
             <?php if (esPersona() && (int) $n['usuario_id'] !== usuario()['id']): ?>
               <form method="post" class="form-denunciar">
                 <?= campoToken() ?>
@@ -71,9 +79,9 @@
               <summary>Responder (<?= count($comentarios[$n['id']] ?? []) ?>)</summary>
               <?php foreach ($comentarios[$n['id']] ?? [] as $c): ?>
                 <?php if ($c['sensible']): ?>
-                  <details class="comentario contenido-sensible"><summary><b><?= e($c['nombre']) ?>:</b> respuesta con un tema difícil. <span>Mostrar</span></summary><p><?= e($c['texto']) ?></p></details>
+                  <details class="comentario contenido-sensible"><summary><b><?= e($c['nombre']) ?>:</b> respuesta con un tema difícil. <span>Mostrar</span></summary><p><?= e($c['texto']) ?></p><?php if (esPersona() && (int) $c['usuario_id'] === usuario()['id']): ?><form method="post" class="form-borrar-comentario" onsubmit="return confirm('¿Borrar tu respuesta?')"><?= campoToken() ?><input type="hidden" name="accion" value="borrar_comentario"><input type="hidden" name="nota" value="<?= $n['id'] ?>"><input type="hidden" name="comentario" value="<?= $c['id'] ?>"><button class="borrar" type="submit">Borrar</button></form><?php endif; ?></details>
                 <?php else: ?>
-                  <p class="comentario"><b><?= e($c['nombre']) ?>:</b> <?= e($c['texto']) ?></p>
+                  <div class="comentario"><b><?= e($c['nombre']) ?>:</b> <?= e($c['texto']) ?> <?php if (esPersona() && (int) $c['usuario_id'] === usuario()['id']): ?><form method="post" class="form-borrar-comentario" onsubmit="return confirm('¿Borrar tu respuesta?')"><?= campoToken() ?><input type="hidden" name="accion" value="borrar_comentario"><input type="hidden" name="nota" value="<?= $n['id'] ?>"><input type="hidden" name="comentario" value="<?= $c['id'] ?>"><button class="borrar" type="submit">Borrar</button></form><?php endif; ?></div>
                 <?php endif; ?>
               <?php endforeach; ?>
               <?php if (esPersona()): ?>
