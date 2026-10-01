@@ -60,7 +60,7 @@ class Apoyo extends Modelo
             'para' => 'Mayores de 18 años que buscan trabajo o quieren iniciar un negocio en Tlaxcala.',
             'que' => 'Vinculación con empresas y apoyo en mobiliario, maquinaria o equipo para empezar un negocio propio.',
             'documentos' => ['CURP', 'Identificación oficial', 'Registro en el Portal del Empleo'],
-            'enlace' => 'https://www.tlaxcaladigital.gob.mx/ficha/subprogramafomentodeautoempleo',
+            'enlace' => 'https://www.empleo.gob.mx/',
             'estado' => 'tlaxcala',
             'regla' => 'adulto',
         ],
